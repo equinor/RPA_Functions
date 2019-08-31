@@ -61,14 +61,8 @@ namespace rpa_functions.rpa_pc35
 
             if (result.Count == 1)
             {
-                Console.WriteLine("Hello");
-
-                result[0].LCI = "test";
-                result[0].SAP = "teest";
-                result[0].Status = 1;
-
-
-                TableResult tr = await table.InsertorReplace(result[0]);
+                PackageCheckTableEntity updatedPackage = Mappings.updatePackageCheck(result[0], bodyData);
+                TableResult tr = await table.InsertorReplace(updatedPackage);
 
                 return true;
             } else
@@ -76,9 +70,6 @@ namespace rpa_functions.rpa_pc35
                 return false;
             }
 
- 
-
-            
         }
     }
 }

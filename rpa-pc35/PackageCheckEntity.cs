@@ -17,6 +17,7 @@ namespace rpa_functions.rpa_pc35
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string PackageId { get; set; }
+        public string InstCode { get; set; }
         public DateTime EntryTime { get; set; } = DateTime.Now;
         public DateTime ProcessedTime { get; set; } = DateTime.Now;
         public string LCI { get; set; }
@@ -29,6 +30,7 @@ namespace rpa_functions.rpa_pc35
     public class PackageCheckTableEntity : TableEntity
     {
         public string PackageId { get; set; }
+        public string InstCode { get; set; }
         public DateTime EntryTime { get; set; } 
         public DateTime ProcessedTime { get; set; }
         public string LCI { get; set; }
@@ -52,6 +54,7 @@ namespace rpa_functions.rpa_pc35
                 PartitionKey = partitionKey,
                 RowKey = packageCheckEntry.Id,
                 PackageId = packageCheckEntry.PackageId,
+                InstCode = packageCheckEntry.InstCode,
                 EntryTime = packageCheckEntry.EntryTime,
                 ProcessedTime = packageCheckEntry.ProcessedTime,
                 LCI = packageCheckEntry.LCI,
@@ -68,6 +71,7 @@ namespace rpa_functions.rpa_pc35
             {
                 Id = packageCheckTableEntity.RowKey,
                 PackageId = packageCheckTableEntity.PackageId,
+                InstCode = packageCheckTableEntity.InstCode,
                 EntryTime = packageCheckTableEntity.EntryTime,
                 ProcessedTime = packageCheckTableEntity.ProcessedTime,
                 LCI = packageCheckTableEntity.LCI,
@@ -100,6 +104,7 @@ namespace rpa_functions.rpa_pc35
                 PackageCheckEntity tmpPack = new PackageCheckEntity();
                 tmpPack.PackageId = package.PackageId;
                 tmpPack.RunType = convertToInt(Convert.ToString(package.RunType));
+                tmpPack.InstCode = package.InstCode;
                 Packages.Add(tmpPack);
             }
 
@@ -116,14 +121,18 @@ namespace rpa_functions.rpa_pc35
             return 0; // default return value if missing or invalid type
         }
 
-        public static PackageCheckEntity updatePackageCheck(dynamic bodyData)
+        public static PackageCheckTableEntity updatePackageCheck(PackageCheckTableEntity package, dynamic bodyData)
         {
-            PackageCheckEntity tmpPack = new PackageCheckEntity();
+            //PackageCheckEntity tmpPack = new PackageCheckEntity();
 
             // Define and handle fields..
-            tmpPack.Id = bodyData.Id;
+            package.ProcessedTime = DateTime.Parse(Convert.ToString(bodyData.ProcessedTime));
+            package.LCI = bodyData.LCI;
+            package.SAP = bodyData.SAP;
+            package.ProcoSys = bodyData.ProcoSys;
+            package.Status = bodyData.Status;
 
-            return tmpPack;
+            return package;
         }
 
        public static string ToPackageCheckEntityJSON(List<PackageCheckTableEntity> packageCheckTableEntities)
