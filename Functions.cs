@@ -99,17 +99,68 @@ namespace rpa_functions
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", "patch", Route = null)] HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            log.LogInformation("PC185 received a webservice call");
 
             string name = req.Query["name"];
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+            dynamic bodyData = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
+            string method = req.Method;
 
-            return name != null
-                ? (ActionResult)new OkObjectResult($"Hello, {name}")
-                : new BadRequestObjectResult("Please pass a name on the query string or in the request body");
+            // Setup table operations object
+            PackCheckTableOperations packTable = new PackCheckTableOperations();
+
+            switch (method)
+            {
+                case "GET":
+                    // Get pending serials 
+                    log.LogInformation("GET Request");
+
+                    string result_get = null;
+                    string wakeup = req.Query["wakeup"];
+
+
+                    if (wakeup == "true") result_get = "Waking up webservice...";
+                    else result_get = packTable.QueryPendingPackages().Result;
+
+
+                    return result_get != null
+                        ? (ActionResult)new OkObjectResult(result_get)
+                        : new BadRequestObjectResult("No Matches");
+
+                case "POST":
+                    // Insert new packages (user initiatied)
+                    log.LogInformation("POST Request");
+
+                    string result_post = null;
+
+                    if (bodyData != null) result_post = await packTable.InsertBatch(bodyData);
+
+                    return result_post != null
+                        ? (ActionResult)new OkObjectResult(result_post)
+                        : new BadRequestObjectResult("Not valid input");
+
+                case "PATCH":
+                    log.LogInformation("PATCH Request");
+
+                    bool result_patch = false;
+
+                    if (bodyData.Id != "")
+                    {
+                        result_patch = await packTable.UpdatePackage(bodyData);
+
+                    }
+
+
+                    return result_patch != false
+                        ? (ActionResult)new OkObjectResult("Success")
+                        : new BadRequestObjectResult("Not valid input");
+
+
+                default:
+                    log.LogError("Invalid HTTP method");
+                    return new BadRequestObjectResult("Not implemented, go away");
+            }
+
         }
     }
 }

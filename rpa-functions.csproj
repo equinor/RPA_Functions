@@ -18,4 +18,7 @@
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="rpa-pc19\" />
+  </ItemGroup>
 </Project>
