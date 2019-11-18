@@ -8,9 +8,110 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using rpa_functions.rpa_pc35;
+using rpa_functions.rpa_pc269;
+using System.Linq;
+using System.Threading;
 
 namespace rpa_functions
 {
+
+    public class PC269_Webservice
+    {
+        private readonly PC269Context _context;
+        public PC269_Webservice(PC269Context context)
+        {
+            _context = context;
+        }
+
+        [FunctionName("PC269_GetAssets")]
+        public IActionResult GetAssets(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "PC269_GetAssets")] HttpRequest req,
+            ILogger log)
+        { 
+            log.LogInformation("PC269 GetAssets called");
+
+            var assetArray = _context.Assets.OrderBy(p => p.asset_name).ToArray();
+            
+            return new OkObjectResult(assetArray);
+
+        }
+
+
+        [FunctionName("PC269_PostAsset")]
+        public async Task<IActionResult> PostAssetAsync(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostAsset")] HttpRequest req, 
+            CancellationToken cts,
+            ILogger log)
+        {
+            log.LogInformation("PC269 post assets  request received");
+
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+
+            Asset newAsset = JsonConvert.DeserializeObject<Asset>(requestBody);
+
+            var entity = await _context.Assets.AddAsync(newAsset, cts);
+
+            await _context.SaveChangesAsync(cts);
+
+            return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity));
+
+        }
+
+
+        [FunctionName("PC269_PostDailyReport")]
+        public async Task<IActionResult> PostDailyReportAsync(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostDailyReport/{asset_id}")] HttpRequest req,
+            int asset_id,
+            CancellationToken cts,
+            ILogger log)
+        {
+            log.LogInformation("PC269 post daily report  request received");
+
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+
+            DailyReport newDailyReport = JsonConvert.DeserializeObject<DailyReport>(requestBody);
+
+            newDailyReport.asset_Id = asset_id;
+
+            var entity = await _context.DailyReports.AddAsync(newDailyReport, cts);
+
+            await _context.SaveChangesAsync(cts);
+
+            return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity));
+
+        }
+
+        [FunctionName("PC269_PostWelltest")]
+        public async Task<IActionResult> PostWellsTestAsync(
+         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostWellstest/{dailyreport_id}")] HttpRequest req,
+          int dailyreport_id,
+          CancellationToken cts,
+          ILogger log)
+        {
+            log.LogInformation("PC269 post wellstest  request received");
+
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+
+            WellsTest newWellstest = JsonConvert.DeserializeObject<WellsTest>(requestBody);
+
+            newWellstest.dailyreport_Id = dailyreport_id;
+
+            var entity = await _context.WellsTests.AddAsync(newWellstest, cts);
+
+            await _context.SaveChangesAsync(cts);
+
+            return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity));
+
+        }
+
+        // Comment
+
+        // Waterinjection
+
+        // Gasinjection
+
+
+    }
     public static class PC35_Auth
     {
         [FunctionName("PC35_Auth")]
