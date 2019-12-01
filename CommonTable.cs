@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
-using Microsoft.WindowsAzure.Storage.Blob;
-using Microsoft.WindowsAzure.Storage.Queue;
-
 
 namespace rpa_functions
 {
@@ -14,17 +10,19 @@ namespace rpa_functions
     {
         static string tableConnectionString = Environment.GetEnvironmentVariable("STORAGE_CONNECTION");
         CloudTableClient tableClient;
-        CloudTable table;
+        
 
-        public CommonTable(string tableName)
+        public CommonTable()
         {
             this.tableClient = getStorageClient();
-            this.table = this.tableClient.GetTableReference(tableName);
+            
         }
 
 
-        public async Task<TableResult> InsertorReplace(ITableEntity tableEntity)
+        public async Task<TableResult> InsertorReplace(ITableEntity tableEntity, string tableName)
         {
+            CloudTable table = this.tableClient.GetTableReference(tableName);
+
             TableOperation insertOrReplaceOperation = TableOperation.InsertOrReplace(tableEntity);
 
             try
@@ -41,8 +39,11 @@ namespace rpa_functions
 
         }
 
-        public async Task<List<T>> RetrieveEntities<T>(string field, string queryComp, int searchValue) where T : TableEntity, new()
+        public async Task<List<T>> RetrieveEntities<T>(string field, string queryComp, int searchValue, string tableName) where T : TableEntity, new()
         {
+            CloudTable table = this.tableClient.GetTableReference(tableName);
+
+
             try
             {
                 // Create the Table Query Object for Azure Table Storage  
@@ -74,8 +75,10 @@ namespace rpa_functions
             }
         }
 
-        public async Task<List<T>> RetrieveEntities<T>(string field, string queryComp, string searchValue) where T : TableEntity, new()
+        public async Task<List<T>> RetrieveEntities<T>(string field, string queryComp, string searchValue, string tableName) where T : TableEntity, new()
         {
+            CloudTable table = this.tableClient.GetTableReference(tableName);
+
             try
             {
                 // Create the Table Query Object for Azure Table Storage  

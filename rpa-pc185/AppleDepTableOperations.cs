@@ -12,7 +12,7 @@ namespace rpa_functions.rpa_pc185
 
         public AppleDepTableOperations()
         {
-            this.table = new CommonTable(this.tableName);
+            this.table = new CommonTable();
         }
 
 
@@ -22,7 +22,7 @@ namespace rpa_functions.rpa_pc185
 
             AppleDepEntity serial_entry = Mappings.PopulateAppleDepEntity(serial, user);
 
-            TableResult tr = await table.InsertorReplace(Mappings.ToAppleDepTableEntity(serial_entry));
+            TableResult tr = await table.InsertorReplace(Mappings.ToAppleDepTableEntity(serial_entry), tableName);
 
 
             return returCode;
@@ -33,7 +33,7 @@ namespace rpa_functions.rpa_pc185
 
             List<AppleDepTableEntity> queryResult = await table.RetrieveEntities<AppleDepTableEntity>(AppleDepConstants.STATUS_FIELD_NAME,
                                                                                      QueryComparisons.Equal,
-                                                                                     AppleDepConstants.STATUS_PENDING);
+                                                                                     AppleDepConstants.STATUS_PENDING, tableName);
 
             return (Mappings.ToEntityJSON(queryResult));
 
@@ -44,7 +44,7 @@ namespace rpa_functions.rpa_pc185
 
             List<AppleDepTableEntity> queryResult = await table.RetrieveEntities<AppleDepTableEntity>(AppleDepConstants.ID_FIELD_NAME,
                                                                                      QueryComparisons.Equal,
-                                                                                     serial);
+                                                                                     serial, tableName);
 
             return queryResult;
         }
@@ -58,7 +58,7 @@ namespace rpa_functions.rpa_pc185
             if (result.Count == 1)
             {
                 AppleDepTableEntity updatedPackage = Mappings.updateSerialStatus(result[0], serial, user, status);
-                TableResult tr = await table.InsertorReplace(updatedPackage);
+                TableResult tr = await table.InsertorReplace(updatedPackage, tableName);
 
                 return true;
             }

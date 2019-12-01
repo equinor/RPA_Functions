@@ -13,7 +13,7 @@ namespace rpa_functions.rpa_pc35
         public PackCheckTableOperations()
         { 
       
-             this.table = new CommonTable(this.tableName);
+             this.table = new CommonTable();
         }
 
         public async Task<string> InsertBatch(dynamic bodyData)
@@ -25,7 +25,7 @@ namespace rpa_functions.rpa_pc35
             foreach (PackageCheckEntity re in packages)
             {
 
-                TableResult tr = await table.InsertorReplace(Mappings.ToTableEntity(re, tableName));
+                TableResult tr = await table.InsertorReplace(Mappings.ToTableEntity(re, tableName), tableName);
 
             }
 
@@ -37,7 +37,7 @@ namespace rpa_functions.rpa_pc35
 
             List<PackageCheckTableEntity> queryResult = await table.RetrieveEntities<PackageCheckTableEntity>(PackageCheckConstants.ID_FIELD_NAME,
                                                                                      QueryComparisons.Equal,
-                                                                                     packageId);
+                                                                                     packageId, tableName);
 
             return queryResult;
         }
@@ -47,7 +47,7 @@ namespace rpa_functions.rpa_pc35
 
             List<PackageCheckTableEntity> queryResult = await table.RetrieveEntities<PackageCheckTableEntity>(PackageCheckConstants.STATUS_FIELD_NAME,
                                                                                      QueryComparisons.Equal,
-                                                                                     PackageCheckConstants.STATUS_PENDING);
+                                                                                     PackageCheckConstants.STATUS_PENDING, tableName);
 
             return (Mappings.ToPackageCheckEntityJSON(queryResult));
 
@@ -62,7 +62,7 @@ namespace rpa_functions.rpa_pc35
             if (result.Count == 1)
             {
                 PackageCheckTableEntity updatedPackage = Mappings.updatePackageCheck(result[0], bodyData);
-                TableResult tr = await table.InsertorReplace(updatedPackage);
+                TableResult tr = await table.InsertorReplace(updatedPackage, tableName);
 
                 return true;
             } else

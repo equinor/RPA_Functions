@@ -19,6 +19,7 @@ GO
 CREATE TABLE [Assets] (
 	asset_Id int IDENTITY(1,1) NOT NULL,
 	country nvarchar(40) NOT NULL,
+
 	asset_name nvarchar(50) NOT NULL UNIQUE,
 	inst_type nvarchar(25) NOT NULL,
   CONSTRAINT [PK_ASSETS] PRIMARY KEY CLUSTERED

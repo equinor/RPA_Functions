@@ -1,23 +1,29 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using rpa_functions.rpa_pc35;
+using rpa_functions.rpa_pc243;
 using rpa_functions.rpa_pc269;
+using rpa_functions.rpa_pc35;
+using System;
+using System.IO;
 using System.Linq;
+
+// Only used by pc243
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace rpa_functions
 {
-
     public class PC269_Webservice
     {
         private readonly PC269Context _context;
+
         public PC269_Webservice(PC269Context context)
         {
             _context = context;
@@ -27,19 +33,17 @@ namespace rpa_functions
         public IActionResult GetAssets(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "PC269_GetAssets")] HttpRequest req,
             ILogger log)
-        { 
+        {
             log.LogInformation("PC269 GetAssets called");
 
             var assetArray = _context.Assets.OrderBy(p => p.asset_name).ToArray();
-            
+
             return new OkObjectResult(assetArray);
-
         }
-
 
         [FunctionName("PC269_PostAsset")]
         public async Task<IActionResult> PostAssetAsync(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostAsset")] HttpRequest req, 
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostAsset")] HttpRequest req,
             CancellationToken cts,
             ILogger log)
         {
@@ -54,9 +58,7 @@ namespace rpa_functions
             await _context.SaveChangesAsync(cts);
 
             return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity));
-
         }
-
 
         [FunctionName("PC269_PostDailyReport")]
         public async Task<IActionResult> PostDailyReportAsync(
@@ -78,7 +80,6 @@ namespace rpa_functions
             await _context.SaveChangesAsync(cts);
 
             return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity));
-
         }
 
         [FunctionName("PC269_PostWelltest")]
@@ -101,7 +102,6 @@ namespace rpa_functions
             await _context.SaveChangesAsync(cts);
 
             return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity));
-
         }
 
         // Comment
@@ -110,12 +110,83 @@ namespace rpa_functions
 
         // Gasinjection
 
+        [FunctionName("PC269_UploadFile")]
+        public async Task<IActionResult> UploadFileToBlob(
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_UploadFile")] HttpRequestMessage req,
+         ILogger log)
+        {
+            log.LogInformation("PC269 Upload File called");
+            CommonBlob blobOps = new CommonBlob();
+            Stream data = await req.Content.ReadAsStreamAsync();
 
+            DateTime _date = DateTime.Now;
+            var _dateString = _date.ToString("dd-MM-yyyy");
+            string fileName = $"{_dateString}-{Guid.NewGuid().ToString()}.pdf";
+
+            Uri retUri = await blobOps.uploadFileToBlob(data, fileName);
+
+            Console.WriteLine(retUri.AbsoluteUri);
+
+            return new OkObjectResult(retUri.AbsoluteUri);
+        }
     }
-    public static class PC35_Auth
+
+    public class PC243_Webservice
+    {
+        private MaterialDeliveryTableOperations mdTableOps = new MaterialDeliveryTableOperations();
+
+        [FunctionName("PC243_GetMaterialDelivery")]
+        public HttpResponseMessage GetMaterialDelivery(
+           [HttpTrigger(AuthorizationLevel.Function, "get", Route = "PC243_MaterialDelivery/{webid}")] HttpRequest req,
+           ILogger log, string webid)
+        {
+            log.LogInformation("PC243 Get task trigged");
+
+            string materialDeliveryHTML = HtmlTemplate.GetPage(mdTableOps.QueryMaterialDeliveryOnWebid(webid).Result);
+
+            Console.Write(materialDeliveryHTML);
+
+            var response = new HttpResponseMessage(HttpStatusCode.OK);
+            response.Content = new StringContent(materialDeliveryHTML);
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
+            return response;
+        }
+
+        [FunctionName("PC243_PostMaterialDelivery")]
+        public async Task<IActionResult> PostMaterialDelivery(
+         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC243_PostMaterialDelivery")] HttpRequest req,
+          ILogger log)
+        {
+            log.LogInformation("PC243 post material delivery  request received");
+
+            dynamic bodyData = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
+
+            string retVal = await mdTableOps.InsertBatch(bodyData);
+
+            return new OkObjectResult("{'Status': 'OK'}");
+        }
+
+        [FunctionName("PC243_PostMaterialDeliveryUpdate")]
+        public async Task<IActionResult> PostMaterialDeliveryUpdate(
+        [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "PC243_PostMaterialDeliveryUpdate/{webid}/{guid}")] HttpRequest req,
+        string webid,
+        string guid,
+        ILogger log)
+        {
+            log.LogInformation("PC243 post material delivery  request received");
+
+            dynamic bodyData = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
+
+            Object retVal = await mdTableOps.UpdateMaterialDelivery(guid, bodyData);
+
+            return (ActionResult)new OkObjectResult(retVal);
+        }
+    }
+
+    public class PC0035_Webservice
     {
         [FunctionName("PC35_Auth")]
-        public static IActionResult Run(
+        public static IActionResult Auth(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
             ILogger log)
         {
@@ -123,14 +194,10 @@ namespace rpa_functions
 
             // Dummy service to enable token generation.
             return (ActionResult)new OkObjectResult("RPA Authentication successful");
-
         }
-    }
 
-    public static class PC35_Webservice
-    {
         [FunctionName("PC35_Webservice")]
-        public static async Task<IActionResult> Run(
+        public static async Task<IActionResult> Webservice(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", "patch", Route = null)] HttpRequest req,
             ILogger log)
         {
@@ -143,7 +210,7 @@ namespace rpa_functions
             // Setup table operations object
             PackCheckTableOperations packTable = new PackCheckTableOperations();
 
-            switch(method)
+            switch (method)
             {
                 case "GET":
                     // Get pending packages (robot initiated)
@@ -172,24 +239,19 @@ namespace rpa_functions
 
                     bool result_patch = false;
 
-                    if(bodyData.Id != "")
+                    if (bodyData.Id != "")
                     {
                         result_patch = await packTable.UpdatePackage(bodyData);
-
                     }
-                    
 
                     return result_patch != false
                         ? (ActionResult)new OkObjectResult("Success")
                         : new BadRequestObjectResult("Not valid input");
 
-
                 default:
                     log.LogError("Invalid HTTP method");
                     return new BadRequestObjectResult("Not implemented, go away");
             }
-            
-
         }
     }
 
@@ -213,16 +275,14 @@ namespace rpa_functions
             switch (method)
             {
                 case "GET":
-                    // Get pending serials 
+                    // Get pending serials
                     log.LogInformation("GET Request");
 
                     string result_get = null;
                     string wakeup = req.Query["wakeup"];
 
-
                     if (wakeup == "true") result_get = "Waking up webservice...";
                     else result_get = packTable.QueryPendingPackages().Result;
-
 
                     return result_get != null
                         ? (ActionResult)new OkObjectResult(result_get)
@@ -248,20 +308,16 @@ namespace rpa_functions
                     if (bodyData.Id != "")
                     {
                         result_patch = await packTable.UpdatePackage(bodyData);
-
                     }
-
 
                     return result_patch != false
                         ? (ActionResult)new OkObjectResult("Success")
                         : new BadRequestObjectResult("Not valid input");
 
-
                 default:
                     log.LogError("Invalid HTTP method");
                     return new BadRequestObjectResult("Not implemented, go away");
             }
-
         }
     }
 }
