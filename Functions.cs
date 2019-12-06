@@ -226,7 +226,8 @@ namespace rpa_functions
 
             string retVal = await mdTableOps.InsertBatch(bodyData);
 
-            return new OkObjectResult("{'Status': 'OK'}");
+            // This is messy, correct..
+            return new OkObjectResult("{'webid': '"+retVal+"'}");
         }
 
         [FunctionName("PC243_PostMaterialDeliveryUpdate")]
