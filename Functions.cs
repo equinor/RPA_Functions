@@ -29,16 +29,16 @@ namespace rpa_functions
             _context = context;
         }
 
-        [FunctionName("PC269_GetAssets")]
+        [FunctionName("PC269_GetAssetByBatch")]
         public IActionResult GetAssets(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "PC269_GetAssets")] HttpRequest req,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "PC269_GetAssetByBatch/{batch}")] HttpRequest req,
+            ILogger log, string batch)
         {
             log.LogInformation("PC269 GetAssets called");
 
-            var assetArray = _context.Assets.OrderBy(p => p.asset_name).ToArray();
-
-            return new OkObjectResult(assetArray);
+            var assetInfo = _context.Assets.FirstOrDefault(b => b.abbyy_batch == batch);
+                                            
+            return new OkObjectResult(assetInfo);
         }
 
         [FunctionName("PC269_PostAsset")]
@@ -104,11 +104,74 @@ namespace rpa_functions
             return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity));
         }
 
-        // Comment
 
-        // Waterinjection
+        [FunctionName("PC269_PostWaterInjection")]
+        public async Task<IActionResult> PostWaterInjectionAsync(
+         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostWaterInjection/{dailyreport_id}")] HttpRequest req,
+          int dailyreport_id,
+          CancellationToken cts,
+          ILogger log)
+        {
+            log.LogInformation("PC269 post waterinjection  request received");
 
-        // Gasinjection
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+
+            WaterInjectionWell newWaterInjection = JsonConvert.DeserializeObject<WaterInjectionWell>(requestBody);
+
+            newWaterInjection.dailyreport_Id = dailyreport_id;
+
+            var entity = await _context.WaterInjectionWells.AddAsync(newWaterInjection, cts);
+
+            await _context.SaveChangesAsync(cts);
+
+            return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity));
+        }
+
+
+        [FunctionName("PC269_PostGasInjection")]
+        public async Task<IActionResult> PostGasInjectionAsync(
+       [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostGasInjection/{dailyreport_id}")] HttpRequest req,
+        int dailyreport_id,
+        CancellationToken cts,
+        ILogger log)
+        {
+            log.LogInformation("PC269 post gasinjection  request received");
+
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+
+            GasInjectionWell newGasInjection = JsonConvert.DeserializeObject<GasInjectionWell>(requestBody);
+
+            newGasInjection.dailyreport_Id = dailyreport_id;
+
+            var entity = await _context.GasInjectionWells.AddAsync(newGasInjection, cts);
+
+            await _context.SaveChangesAsync(cts);
+
+            return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity));
+        }
+
+        [FunctionName("PC269_PostComments")]
+        public async Task<IActionResult> PostCommentsAsync(
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostComments/{dailyreport_id}")] HttpRequest req,
+        int dailyreport_id,
+        CancellationToken cts,
+        ILogger log)
+        {
+            log.LogInformation("PC269 post comments  request received");
+
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+
+            Comment newComments = JsonConvert.DeserializeObject<Comment>(requestBody);
+
+            newComments.dailyreport_Id = dailyreport_id;
+
+            var entity = await _context.Comments.AddAsync(newComments, cts);
+
+            await _context.SaveChangesAsync(cts);
+
+            return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity));
+        }
+
 
         [FunctionName("PC269_UploadFile")]
         public async Task<IActionResult> UploadFileToBlob(
@@ -142,7 +205,7 @@ namespace rpa_functions
         {
             log.LogInformation("PC243 Get task trigged");
 
-            string materialDeliveryHTML = HtmlTemplate.GetPage(mdTableOps.QueryMaterialDeliveryOnWebid(webid).Result);
+            string materialDeliveryHTML = HtmlTemplate.GetPage(mdTableOps.QueryMaterialDeliveryOnWebid(webid, false).Result);
 
             Console.Write(materialDeliveryHTML);
 

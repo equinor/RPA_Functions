@@ -184,7 +184,8 @@ namespace rpa_functions.rpa_pc243
         public const string STATUS_FIELD_NAME = "status";
         public const int STATUS_WAITING = 0;
         public const int STATUS_DONE = 1;
-        public const int STATUS_ERROR = -1;
+        public const int STATUS_FETCHED = 2;
+        public const int STATUS_EXPIRED = 3;
 
     }
 

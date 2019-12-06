@@ -18,6 +18,7 @@ namespace rpa_functions
             
         }
 
+        // Delete table entities on filter condition
 
         public async Task<TableResult> InsertorReplace(ITableEntity tableEntity, string tableName)
         {
@@ -54,7 +55,43 @@ namespace rpa_functions
 
                 TableQuery<T> query = new TableQuery<T>()
                  .Where(TableQuery.GenerateFilterConditionForInt(field, queryComp, searchValue));
-                
+               
+
+                do
+                {
+                    segment = await table.ExecuteQuerySegmentedAsync(query, continuationToken);
+                    if (segment == null)
+                    {
+                        break;
+                    }
+                    DataList.AddRange(segment);
+
+                } while (continuationToken != null);
+                return DataList;
+
+            }
+            catch (Exception ExceptionObj)
+            {
+                throw ExceptionObj;
+            }
+        }
+
+        // Combine filters
+        
+        public async Task<List<T>> RetrieveEntitiesCombinedFilter<T>(string filter1, string operand, string filter2, string tableName) where T : TableEntity, new()
+        {
+            CloudTable table = this.tableClient.GetTableReference(tableName);
+            try
+            {
+                TableQuery<T> DataTableQuery = new TableQuery<T>();
+                List<T> DataList = new List<T>();
+                TableQuerySegment<T> segment;
+                TableContinuationToken continuationToken = null;
+
+                TableQuery<T> query = new TableQuery<T>()
+                 .Where(TableQuery.CombineFilters(filter1, operand, filter2));
+
+               
 
                 do
                 {

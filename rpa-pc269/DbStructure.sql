@@ -19,9 +19,17 @@ GO
 CREATE TABLE [Assets] (
 	asset_Id int IDENTITY(1,1) NOT NULL,
 	country nvarchar(40) NOT NULL,
-
 	asset_name nvarchar(50) NOT NULL UNIQUE,
 	inst_type nvarchar(25) NOT NULL,
+	verifier varchar(40) NOT NULL,
+	abbyy_batch varchar(40) NOT NULL,
+	prod_oil_default_unit varchar(10),
+    prod_gas_default_unit varchar(10), 
+    prod_water_default_unit varchar(10),
+    injection_water_unit_default_unit varchar(10),
+    injection_gas_unit_default_unit varchar(10),
+    fuel_gas_default_unit varchar(10),
+    flare_gas_default_unit varchar(10)
   CONSTRAINT [PK_ASSETS] PRIMARY KEY CLUSTERED
   (
   [asset_Id] ASC
@@ -47,6 +55,7 @@ CREATE TABLE [DailyReports] (
 	flare_gas int,
 	flare_gas_unit varchar(10),
 	production_date date NOT NULL,
+	production_report_uri varchar(255) NOT NULL
   CONSTRAINT [PK_DAILYREPORT] PRIMARY KEY CLUSTERED
   (
   [dailyreport_Id] ASC

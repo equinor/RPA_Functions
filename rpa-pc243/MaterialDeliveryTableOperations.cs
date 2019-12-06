@@ -43,28 +43,35 @@ namespace rpa_functions.rpa_pc243
                 }
             }
 
-            return returnCode;
+            return materialDeliveries[0].webguid;
         }
 
 
-        public async Task<List<MaterialDeliveryTableEntity>> QueryMaterialDeliveryOnWebid(string webid)
+        public async Task<List<MaterialDeliveryTableEntity>> QueryMaterialDeliveryOnWebid(string webid, bool robotQuery)
         {
+            if (robotQuery == false) { 
+                string guidFilter = TableQuery.GenerateFilterCondition(MaterialDeliveryConstants.WEBID_FIELD_NAME, QueryComparisons.Equal, webid);
+                string statusFilter = TableQuery.GenerateFilterConditionForInt(MaterialDeliveryConstants.STATUS_FIELD_NAME, QueryComparisons.Equal, MaterialDeliveryConstants.STATUS_WAITING);
 
-            List<MaterialDeliveryTableEntity> queryResult = await table.RetrieveEntities<MaterialDeliveryTableEntity>(MaterialDeliveryConstants.WEBID_FIELD_NAME,
-                                                                                     QueryComparisons.Equal,
-                                                                                     webid, tableName);
-
-            // Add logic to add filter on status
+                List<MaterialDeliveryTableEntity> queryResult = await table.RetrieveEntitiesCombinedFilter<MaterialDeliveryTableEntity>(guidFilter,
+                                                                                                                                    TableOperators.And,
+                                                                                                                                    statusFilter,
+                                                                                                                                    tableName);
 
             return queryResult;
+            } else if (robotQuery == true)
+            {
+                List<MaterialDeliveryTableEntity> queryResult = await table.RetrieveEntities<MaterialDeliveryTableEntity>(MaterialDeliveryConstants.WEBID_FIELD_NAME, QueryComparisons.Equal, webid, tableName);
+
+             return queryResult;
+            }
+
+            return null;
         }
         public async Task<List<MaterialDeliveryTableEntity>> QueryMaterialDeliveryOnGuid(string guid)
         {
 
-            List<MaterialDeliveryTableEntity> queryResult = await table.RetrieveEntities<MaterialDeliveryTableEntity>(MaterialDeliveryConstants.ID_FIELD_NAME,
-                                                                                     QueryComparisons.Equal,
-                                                                                     guid, tableName);
-
+            List<MaterialDeliveryTableEntity> queryResult = await table.RetrieveEntities<MaterialDeliveryTableEntity>(MaterialDeliveryConstants.ID_FIELD_NAME, QueryComparisons.Equal, guid, tableName);
 
 
             return queryResult;

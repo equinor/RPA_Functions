@@ -28,7 +28,16 @@ namespace rpa_functions.rpa_pc269
         public string country { get; set; }
         public string asset_name { get; set; }
         public string inst_type { get; set; }
-        //public ICollection<DailyReport> DailyReports { get; set; }
+        public string verifier { get; set; }
+        public string abbyy_batch { get; set; }
+        public string prod_oil_default_unit { get; set; }
+        public string prod_gas_default_unit { get; set; }
+        public string prod_water_default_unit { get; set; }
+        public string injection_water_unit_default_unit { get; set; }
+        public string injection_gas_unit_default_unit { get; set; }
+        public string fuel_gas_default_unit { get; set; }
+        public string flare_gas_default_unit { get; set; }
+
     }
 
     public class DailyReport
@@ -51,6 +60,7 @@ namespace rpa_functions.rpa_pc269
         public int flare_gas { get; set; }
         public string flare_gas_unit { get; set; }
         public DateTime production_date { get; set; }
+        public string production_report_uri { get; set; }
 
     }
 
