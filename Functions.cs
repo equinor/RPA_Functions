@@ -198,6 +198,7 @@ namespace rpa_functions
     {
         private MaterialDeliveryTableOperations mdTableOps = new MaterialDeliveryTableOperations();
 
+        // Will be called by the Customer WWW Interface (EXPOSED TO INTERNET)
         [FunctionName("PC243_GetMaterialDelivery")]
         public HttpResponseMessage GetMaterialDelivery(
            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "PC243_MaterialDelivery/{webid}")] HttpRequest req,
@@ -215,27 +216,13 @@ namespace rpa_functions
             return response;
         }
 
-        [FunctionName("PC243_PostMaterialDelivery")]
-        public async Task<IActionResult> PostMaterialDelivery(
-         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC243_PostMaterialDelivery")] HttpRequest req,
-          ILogger log)
-        {
-            log.LogInformation("PC243 post material delivery  request received");
-
-            dynamic bodyData = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
-
-            string retVal = await mdTableOps.InsertBatch(bodyData);
-
-            // This is messy, correct..
-            return new OkObjectResult("{'webid': '"+retVal+"'}");
-        }
-
+        // Will be called by the Customer WWW Interface (EXPOSED TO INTERNET)
         [FunctionName("PC243_PostMaterialDeliveryUpdate")]
         public async Task<IActionResult> PostMaterialDeliveryUpdate(
-        [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "PC243_PostMaterialDeliveryUpdate/{webid}/{guid}")] HttpRequest req,
-        string webid,
-        string guid,
-        ILogger log)
+            [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "PC243_PostMaterialDeliveryUpdate/{webid}/{guid}")] HttpRequest req,
+            string webid,
+            string guid,
+            ILogger log)
         {
             log.LogInformation("PC243 post material delivery  request received");
 
@@ -245,6 +232,30 @@ namespace rpa_functions
 
             return (ActionResult)new OkObjectResult(retVal);
         }
+
+        // Will be called by the robot (IP block and request key required)
+        [FunctionName("PC243_PostMaterialDelivery")]
+        public async Task<IActionResult> PostMaterialDelivery(
+         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC243_PostMaterialDelivery")] HttpRequest req,
+          ILogger log)
+        {
+            log.LogInformation("PC243 post material delivery  request received");
+
+            dynamic bodyData = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
+
+            //  Check if input it OK
+            
+            string retVal = await mdTableOps.InsertBatch(bodyData);
+
+            // This is messy, correct..
+            return new OkObjectResult("{'webid': '"+retVal+"'}");
+        }
+
+        // Make a webservice to poll on webids on status=1 (updated), update to status 2
+
+        // Make a webservice to expire
+
+
     }
 
     public class PC0035_Webservice

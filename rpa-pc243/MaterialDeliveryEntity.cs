@@ -295,7 +295,7 @@ namespace rpa_functions.rpa_pc243
 
             foreach (var element in bodyData)
             {
-                MaterialDeliveryEntity tmpEnt = castFromBodyData(element);
+                MaterialDeliveryEntity tmpEnt = castInsertDeliveryFromBodyData(element);
 
                 tmpEnt.webguid = newWebGuid;
 
@@ -305,7 +305,7 @@ namespace rpa_functions.rpa_pc243
             return MaterialDelivieres;
         }
 
-        private static MaterialDeliveryEntity castFromBodyData(dynamic bodyData)
+        private static MaterialDeliveryEntity castInsertDeliveryFromBodyData(dynamic bodyData)
         {
             MaterialDeliveryEntity returnEntity = new MaterialDeliveryEntity();
 
@@ -318,6 +318,17 @@ namespace rpa_functions.rpa_pc243
             returnEntity.order_qty = bodyData.order_qty;
             returnEntity.order_unit = bodyData.order_unit;
             if (Convert.ToString(bodyData.delivery_date) != "") returnEntity.delivery_date = DateTime.Parse(Convert.ToString(bodyData.delivery_date));
+
+            return returnEntity;
+
+        }
+
+        // FIX THIS::::
+        private static MaterialDeliveryEntity castFromBodyData(dynamic bodyData)
+        {
+            MaterialDeliveryEntity returnEntity = new MaterialDeliveryEntity();
+
+
             returnEntity.delivered_ondate = bodyData.delivered_ondate;
             if (Convert.ToString(bodyData.new_delivery_date) != "") returnEntity.new_delivery_date = DateTime.Parse(Convert.ToString(bodyData.new_delivery_date));
             returnEntity.tracking_nr = bodyData.tracking_nr;
