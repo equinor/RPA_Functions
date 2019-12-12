@@ -201,9 +201,9 @@ namespace rpa_functions.rpa_pc243
         public string shorttext { get; set; }
         public string order_qty { get; set; }
         public string order_unit { get; set; }
-        public DateTime delivery_date { get; set; }
+        public DateTime delivery_date { get; set; } 
         public string delivered_ondate { get; set; }
-        public DateTime new_delivery_date { get; set; }
+        public DateTime? new_delivery_date { get; set; }
         public string tracking_nr { get; set; }
         public string freight_name { get; set; }
         public int status { get; set; } = 0;
@@ -221,7 +221,7 @@ namespace rpa_functions.rpa_pc243
         public string order_unit { get; set; }
         public DateTime delivery_date { get; set; }
         public string delivered_ondate { get; set; }
-        public DateTime new_delivery_date { get; set; }
+        public DateTime? new_delivery_date { get; set; }
         public string tracking_nr { get; set; }
         public string freight_name { get; set; }
         public int status { get; set; }
