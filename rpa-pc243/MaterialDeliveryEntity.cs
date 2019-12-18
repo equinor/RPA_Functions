@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace rpa_functions.rpa_pc243
 {
@@ -14,7 +15,11 @@ namespace rpa_functions.rpa_pc243
             string htmlHead = gethtmlhead(materialDeliveries[0].vendor_name, materialDeliveries[0].webguid);
             string htmlTable = "";
 
-            foreach (MaterialDeliveryEntity ent in materialDeliveries)
+            List<MaterialDeliveryEntity> materialDeliveriesSorted = materialDeliveries.OrderBy(p => p.po).ToList();
+            
+
+
+            foreach (MaterialDeliveryEntity ent in materialDeliveriesSorted)
             {
                 string tableLine = $@"
                                     <tr>
