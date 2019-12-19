@@ -73,13 +73,22 @@ namespace rpa_functions.rpa_pc243
 
             List<MaterialDeliveryTableEntity> queryResult = await table.RetrieveEntities<MaterialDeliveryTableEntity>(MaterialDeliveryConstants.ID_FIELD_NAME, QueryComparisons.Equal, guid, tableName);
 
-
+            
             return queryResult;
         }
 
+        public async Task<Object> QueryMaterialDeliveryOnStatus() 
+        {
+            List<MaterialDeliveryTableEntity> queryResult = await table.RetrieveEntities<MaterialDeliveryTableEntity>(MaterialDeliveryConstants.STATUS_FIELD_NAME, QueryComparisons.Equal, MaterialDeliveryConstants.STATUS_DONE, tableName);
+            return queryResult;
+
+        }       
+
 
         
-        public  async Task<Object> UpdateMaterialDelivery(string guid, dynamic bodyData)
+
+
+        public async Task<Object> UpdateMaterialDelivery(string guid, dynamic bodyData)
         {
 
             // Find package, if found - update else fail.

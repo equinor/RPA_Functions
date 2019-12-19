@@ -239,9 +239,10 @@ namespace rpa_functions
          [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC243_PostMaterialDelivery")] HttpRequest req,
           ILogger log)
         {
-            log.LogInformation("PC243 post material delivery  request received");
-
+            log.LogInformation("PC243 post material delivery  request by robot received");
+            
             dynamic bodyData = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
+            
 
             //  Check if input it OK
             
@@ -252,6 +253,18 @@ namespace rpa_functions
         }
 
         // Make a webservice to poll on webids on status=1 (updated), update to status 2
+    [FunctionName("PC243_GetMaterialDeliveryRob")]
+        public async Task<IActionResult> GetMaterialDeliveryRob(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "PC243_GetMaterialDeliveryRob")] HttpRequest req, ILogger log)
+        {
+            log.LogInformation("PC243 get material delivery  request by robot received");
+            string materialDeliveryresp = JsonConvert.SerializeObject(mdTableOps.QueryMaterialDeliveryOnStatus().Result);
+
+            Console.Write(materialDeliveryresp);
+
+            return new OkObjectResult(materialDeliveryresp);
+
+        }
 
         // Make a webservice to expire
 
