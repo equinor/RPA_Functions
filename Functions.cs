@@ -253,12 +253,14 @@ namespace rpa_functions
         }
 
         // Make a webservice to poll on webids on status=1 (updated), update to status 2
-    [FunctionName("PC243_GetMaterialDeliveryRob")]
+        [FunctionName("PC243_GetMaterialDeliveryRob")]
         public async Task<IActionResult> GetMaterialDeliveryRob(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "PC243_GetMaterialDeliveryRob")] HttpRequest req, ILogger log)
         {
+            //int stat = int.Parse(status);
             log.LogInformation("PC243 get material delivery  request by robot received");
-            string materialDeliveryresp = JsonConvert.SerializeObject(mdTableOps.QueryMaterialDeliveryOnStatus().Result);
+            string materialDeliveryresp = JsonConvert.SerializeObject(mdTableOps.QueryMaterialDeliveryOnStatusAndComplete().Result);
+
 
             Console.Write(materialDeliveryresp);
 
