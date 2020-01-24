@@ -109,6 +109,51 @@ namespace rpa_functions.rpa_pc243
             return queryResult;
         }
 
+        public async Task<List<MaterialDeliveryTableEntity>> QueryMaterialDeliveryOnStatusAndRemove() 
+        {
+            List<MaterialDeliveryTableEntity> queryResult = QueryMaterialDeliveryOnStatus(MaterialDeliveryConstants.STATUS_WAITING).Result;
+             
+            foreach (MaterialDeliveryTableEntity element in queryResult)
+            {
+                TimeSpan ts = DateTime.Now - element.Timestamp;
+                if ( ts.Days >= 14)
+                {
+                    try
+                    {
+                        
+                        TableResult trRm = await table.Remove(element, tableName);
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine("Error in writing to table storage " + ex.ToString());
+                    }                  
+                }                
+            }
+            List<MaterialDeliveryTableEntity> queryResult2 = QueryMaterialDeliveryOnStatus(MaterialDeliveryConstants.STATUS_FETCHED).Result;
+
+            foreach (MaterialDeliveryTableEntity element in queryResult2)
+            {
+                TimeSpan ts = DateTime.Now - element.Timestamp;
+                if (ts.Days >= 14)
+                {
+                    try
+                    {
+                        
+                        TableResult trRm = await table.Remove(element, tableName);
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine("Error in writing to table storage " + ex.ToString());
+                    }
+                }
+            }
+            return null;
+        }
+
 
 
 

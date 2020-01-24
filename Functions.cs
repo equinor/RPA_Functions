@@ -268,6 +268,30 @@ namespace rpa_functions
 
         }
 
+
+        // Make webservice to poll webids on status= 2 (fetched), update to status 3, and remove
+        [FunctionName("PC243_RemoveMaterialDeliveryRob")]
+        public async Task<IActionResult> RemoveMaterialDeliveryRob(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "PC243_RemoveMaterialDeliveryRob")] HttpRequest req, ILogger log)
+        {
+            //int stat = int.Parse(status);
+            log.LogInformation("PC243 remove material delivery  request by robot received");
+            string materialDeliveryresp = JsonConvert.SerializeObject(mdTableOps.QueryMaterialDeliveryOnStatusAndRemove().Result);
+
+
+            Console.Write(materialDeliveryresp);
+
+            return new OkObjectResult(materialDeliveryresp);
+
+        }
+
+
+
+
+
+
+
+
         // Make a webservice to expire
 
 
