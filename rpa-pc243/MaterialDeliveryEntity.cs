@@ -206,7 +206,7 @@ namespace rpa_functions.rpa_pc243
         public DateTime? new_delivery_date { get; set; }
         public string tracking_nr { get; set; }
         public string freight_name { get; set; }
-        public int status { get; set; } = 0;
+        public int status { get; set; } = MaterialDeliveryConstants.STATUS_WAITING;
     }
 
     public class MaterialDeliveryTableEntity : TableEntity

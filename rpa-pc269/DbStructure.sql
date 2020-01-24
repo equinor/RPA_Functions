@@ -1,4 +1,4 @@
-﻿DROP TABLE [WellsTests]
+﻿DROP TABLE [WellsDetails]
 GO
 
 DROP TABLE [WaterInjectionWells]
@@ -22,6 +22,7 @@ CREATE TABLE [Assets] (
 	asset_name nvarchar(50) NOT NULL UNIQUE,
 	inst_type nvarchar(25) NOT NULL,
 	verifier varchar(40) NOT NULL,
+	sla smallint NOT NULL,
 	abbyy_batch varchar(40) NOT NULL,
 	prod_oil_default_unit varchar(10),
     prod_gas_default_unit varchar(10), 
@@ -30,6 +31,7 @@ CREATE TABLE [Assets] (
     injection_gas_unit_default_unit varchar(10),
     fuel_gas_default_unit varchar(10),
     flare_gas_default_unit varchar(10)
+	-- make all units..
   CONSTRAINT [PK_ASSETS] PRIMARY KEY CLUSTERED
   (
   [asset_Id] ASC
@@ -41,19 +43,12 @@ CREATE TABLE [DailyReports] (
 	dailyreport_Id bigint IDENTITY(1,1) NOT NULL,
 	asset_Id int NOT NULL,
 	prod_oil int NOT NULL,
-	prod_oil_unit varchar(10),
 	prod_gas int NOT NULL,
-	prod_gas_unit varchar(10),
 	prod_water int NOT NULL,
-	prod_water_unit varchar(10),
 	injection_water int,
-	injection_water_unit varchar(10),
 	injection_gas int,
-	injection_gas_unit varchar(10),
 	fuel_gas int,
-	fuel_gas_unit varchar(10),
 	flare_gas int,
-	flare_gas_unit varchar(10),
 	production_date date NOT NULL,
 	production_report_uri varchar(255) NOT NULL
   CONSTRAINT [PK_DAILYREPORT] PRIMARY KEY CLUSTERED
@@ -63,7 +58,7 @@ CREATE TABLE [DailyReports] (
 
 )
 GO
-CREATE TABLE [WellsTests] (
+CREATE TABLE [WellsDetails] (
 	welltest_Id bigint IDENTITY(1,1) NOT NULL,
 	dailyreport_Id bigint NOT NULL,
 	well_name nvarchar(25) NOT NULL,
@@ -72,13 +67,22 @@ CREATE TABLE [WellsTests] (
 	oil_rate int,
 	wellhead_press int,
 	wellhead_temp smallint,
-	choke_open decimal,
+	choke_open decimal(6,2),
 	test_sep smallint,
 	water_rate int,
-	bsw decimal,
+	bsw decimal(6,2),
 	gas_rate int,
 	gor int,
 	glr int,
+	prodHoursOn int,
+	prodDay date,
+	prodOil int,
+	prodWater int,
+	prodGas int,
+	prodChokeOpen decimal(6,2),
+	prodWellHeadPress int,
+	prodWellHeadTemp int,
+	prodAnnulusPress int
   CONSTRAINT [PK_WELLSTEST] PRIMARY KEY CLUSTERED
   (
   [welltest_Id] ASC
@@ -92,7 +96,7 @@ CREATE TABLE [WaterInjectionWells] (
 	well_name nvarchar(25) NOT NULL,
 	prod_date date NOT NULL,
 	hours_on smallint,
-	choke_open decimal,
+	choke_open decimal(6,2),
 	wellhead_press int,
 	fl int,
 	wellhead_temp smallint,
@@ -113,7 +117,7 @@ CREATE TABLE [GasInjectionWells] (
 	well_name nvarchar(25) NOT NULL,
 	prod_date date NOT NULL,
 	hours_on smallint,
-	choke_open decimal,
+	choke_open decimal(6,2),
 	wellhead_press int,
 	fl int,
 	wellhead_temp smallint,
