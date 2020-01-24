@@ -121,6 +121,7 @@ namespace rpa_functions.rpa_pc243
                                                     'color': 'black'
                                                   });
                                                   $('#button_' + id).prop('disabled', true);
+                                                  makehttp(id, true); 
                                                 } else {
                                                   // Not valid date, make user correct it
                                                   $('#deliverydate_' + id).css({
