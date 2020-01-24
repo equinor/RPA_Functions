@@ -8,6 +8,7 @@ using rpa_functions.rpa_pc243;
 using rpa_functions.rpa_pc269;
 using rpa_functions.rpa_pc35;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -20,6 +21,26 @@ using System.Threading.Tasks;
 
 namespace rpa_functions
 {
+ 
+    public class PC239WebService
+    {
+        [FunctionName("PC239_GetReturnForCredit")]
+        public IActionResult GetReturnForCredit(
+    [HttpTrigger(AuthorizationLevel.Function, "get", Route = "PC239_GetReturnForCredit/{guid}")] HttpRequest req,
+    ILogger log, string guid)
+        {
+            log.LogInformation("PC239 GetReturnForCredit called");
+
+            // Do the magic and return something. This one calls table ops and return an object that is converted into json.
+
+
+            return new OkObjectResult(JsonConvert.SerializeObject(null)); // put something in here.
+        }
+
+
+    }
+
+    
     public class PC269_Webservice
     {
         private readonly PC269Context _context;
@@ -37,8 +58,9 @@ namespace rpa_functions
             log.LogInformation("PC269 GetAssets called");
 
             var assetInfo = _context.Assets.FirstOrDefault(b => b.abbyy_batch == batch);
+
                                             
-            return new OkObjectResult(assetInfo);
+            return new OkObjectResult(JsonConvert.SerializeObject(assetInfo));
         }
 
         [FunctionName("PC269_PostAsset")]
@@ -50,7 +72,7 @@ namespace rpa_functions
             log.LogInformation("PC269 post assets  request received");
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-
+            
             Asset newAsset = JsonConvert.DeserializeObject<Asset>(requestBody);
 
             var entity = await _context.Assets.AddAsync(newAsset, cts);
@@ -79,12 +101,14 @@ namespace rpa_functions
 
             await _context.SaveChangesAsync(cts);
 
+
+
             return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity));
         }
 
-        [FunctionName("PC269_PostWelltest")]
-        public async Task<IActionResult> PostWellsTestAsync(
-         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostWellstest/{dailyreport_id}")] HttpRequest req,
+        [FunctionName("PC269_PostWellsDetails")]
+        public async Task<IActionResult> PostWellsDetailAsync(
+         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostWellsDetails/{dailyreport_id}")] HttpRequest req,
           int dailyreport_id,
           CancellationToken cts,
           ILogger log)
@@ -93,21 +117,26 @@ namespace rpa_functions
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-            WellsTest newWellstest = JsonConvert.DeserializeObject<WellsTest>(requestBody);
+            dynamic newWellstest = JsonConvert.DeserializeObject(requestBody);
 
-            newWellstest.dailyreport_Id = dailyreport_id;
+            List<WellsDetails> WellDetailsList = PC269Mappings.ObjectToWellsDetailsList(newWellstest, dailyreport_id);
 
-            var entity = await _context.WellsTests.AddAsync(newWellstest, cts);
+            foreach(WellsDetails wellDetailsElement in WellDetailsList)
+            {
+          
+                await _context.WellsDetails.AddAsync(wellDetailsElement, cts);
+               
+                await _context.SaveChangesAsync(cts);
+            }
 
-            await _context.SaveChangesAsync(cts);
 
-            return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity));
+            return new OkObjectResult("ok");
         }
 
 
-        [FunctionName("PC269_PostWaterInjection")]
-        public async Task<IActionResult> PostWaterInjectionAsync(
-         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostWaterInjection/{dailyreport_id}")] HttpRequest req,
+        [FunctionName("PC269_PostWaterInjectionWell")]
+        public async Task<IActionResult> PostWaterInjectionWellAsync(
+         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostWaterInjectionWell/{dailyreport_id}")] HttpRequest req,
           int dailyreport_id,
           CancellationToken cts,
           ILogger log)
@@ -116,21 +145,26 @@ namespace rpa_functions
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-            WaterInjectionWell newWaterInjection = JsonConvert.DeserializeObject<WaterInjectionWell>(requestBody);
+            dynamic newWaterInjectionWell = JsonConvert.DeserializeObject(requestBody);
 
-            newWaterInjection.dailyreport_Id = dailyreport_id;
+            List<WaterInjectionWell> WaterInjectionWellList = PC269Mappings.ObjectToWaterInjectionWellList(newWaterInjectionWell, dailyreport_id);
 
-            var entity = await _context.WaterInjectionWells.AddAsync(newWaterInjection, cts);
+            foreach (WaterInjectionWell waterInjectionWell in WaterInjectionWellList)
+            {
 
-            await _context.SaveChangesAsync(cts);
+                await _context.WaterInjectionWells.AddAsync(waterInjectionWell, cts);
 
-            return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity));
+                await _context.SaveChangesAsync(cts);
+            }
+
+
+            return new OkObjectResult("ok");
         }
 
 
-        [FunctionName("PC269_PostGasInjection")]
-        public async Task<IActionResult> PostGasInjectionAsync(
-       [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostGasInjection/{dailyreport_id}")] HttpRequest req,
+        [FunctionName("PC269_PostGasInjectionWell")]
+        public async Task<IActionResult> PostGasInjectionWellAsync(
+       [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostGasInjectionWell/{dailyreport_id}")] HttpRequest req,
         int dailyreport_id,
         CancellationToken cts,
         ILogger log)
@@ -139,15 +173,20 @@ namespace rpa_functions
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-            GasInjectionWell newGasInjection = JsonConvert.DeserializeObject<GasInjectionWell>(requestBody);
+            dynamic newGasInjectionWell = JsonConvert.DeserializeObject(requestBody);
 
-            newGasInjection.dailyreport_Id = dailyreport_id;
+            List<GasInjectionWell> GasInjectionWellList = PC269Mappings.ObjectToGasInjectionWellList(newGasInjectionWell, dailyreport_id);
 
-            var entity = await _context.GasInjectionWells.AddAsync(newGasInjection, cts);
+            foreach (GasInjectionWell gasInjectionWell in GasInjectionWellList)
+            {
 
-            await _context.SaveChangesAsync(cts);
+                await _context.GasInjectionWells.AddAsync(gasInjectionWell, cts);
 
-            return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity));
+                await _context.SaveChangesAsync(cts);
+            }
+
+
+            return new OkObjectResult("ok");
         }
 
         [FunctionName("PC269_PostComments")]
@@ -190,7 +229,7 @@ namespace rpa_functions
 
             Console.WriteLine(retUri.AbsoluteUri);
 
-            return new OkObjectResult(retUri.AbsoluteUri);
+            return new OkObjectResult(new { fileuri = retUri.AbsoluteUri });
         }
     }
 
