@@ -73,13 +73,46 @@ namespace rpa_functions.rpa_pc243
 
             List<MaterialDeliveryTableEntity> queryResult = await table.RetrieveEntities<MaterialDeliveryTableEntity>(MaterialDeliveryConstants.ID_FIELD_NAME, QueryComparisons.Equal, guid, tableName);
 
+            
+            return queryResult;
+        }
+
+        private async Task<List<MaterialDeliveryTableEntity>> QueryMaterialDeliveryOnStatus(int status) 
+        {
+            List<MaterialDeliveryTableEntity> queryResult = await table.RetrieveEntities<MaterialDeliveryTableEntity>(MaterialDeliveryConstants.STATUS_FIELD_NAME, QueryComparisons.Equal, status, tableName);
+            
+            return queryResult;
+
+        }
+
+        public async Task<List<MaterialDeliveryTableEntity>> QueryMaterialDeliveryOnStatusAndComplete()
+        {
+            List<MaterialDeliveryTableEntity> queryResult = QueryMaterialDeliveryOnStatus(MaterialDeliveryConstants.STATUS_DONE).Result;
+
+            foreach(MaterialDeliveryTableEntity element in queryResult)
+            {
+                element.status = MaterialDeliveryConstants.STATUS_FETCHED;
+
+                try
+                {
+                    TableResult tr = await table.InsertorReplace(element, tableName);
+
+
+                } catch (Exception ex)
+                {
+                    Console.WriteLine("Error in writing to table storage "+ ex.ToString());
+                }
+
+            }
+
 
             return queryResult;
         }
 
 
-        
-        public  async Task<Object> UpdateMaterialDelivery(string guid, dynamic bodyData)
+
+
+        public async Task<Object> UpdateMaterialDelivery(string guid, dynamic bodyData)
         {
 
             // Find package, if found - update else fail.
@@ -99,7 +132,7 @@ namespace rpa_functions.rpa_pc243
             }
 
         }
-        
 
+       
     }
 }
