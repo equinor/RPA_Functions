@@ -50,6 +50,7 @@ namespace rpa_functions.rpa_pc243
         public async Task<List<MaterialDeliveryTableEntity>> QueryMaterialDeliveryOnWebid(string webid, bool robotQuery)
         {
             if (robotQuery == false) { 
+                
                 string guidFilter = TableQuery.GenerateFilterCondition(MaterialDeliveryConstants.WEBID_FIELD_NAME, QueryComparisons.Equal, webid);
                 string statusFilter = TableQuery.GenerateFilterConditionForInt(MaterialDeliveryConstants.STATUS_FIELD_NAME, QueryComparisons.Equal, MaterialDeliveryConstants.STATUS_WAITING);
 
@@ -59,6 +60,7 @@ namespace rpa_functions.rpa_pc243
                                                                                                                                     tableName);
 
             return queryResult;
+
             } else if (robotQuery == true)
             {
                 List<MaterialDeliveryTableEntity> queryResult = await table.RetrieveEntities<MaterialDeliveryTableEntity>(MaterialDeliveryConstants.WEBID_FIELD_NAME, QueryComparisons.Equal, webid, tableName);

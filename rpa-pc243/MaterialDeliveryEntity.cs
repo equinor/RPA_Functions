@@ -37,7 +37,7 @@ namespace rpa_functions.rpa_pc243
                                     <input class=delivery type=radio name=delivery_{ent.id} id=delivery_no_{ent.id} value=no>No<br>
                                     </td>
                                     <td>
-                                    <input class=deliverydate name=deliverydate_{ent.id} disabled type=text id=deliverydate_{ent.id}>
+                                    <input class=deliverydate name=deliverydate_{ent.id} type=text id=deliverydate_{ent.id}>
                                     </td>
                                     <td>
                                     <input class=trackingnr name=trackingnr_{ent.id} input=text id=trackingnr_{ent.id}>
@@ -92,21 +92,7 @@ namespace rpa_functions.rpa_pc243
         private const string htmltail = @"</table>
                                           <br>
                                           <script>
-                                            $('.delivery').click(function() {
-                                              var id = this.id.split('_')[2];
-                                              var action = this.id.split('_')[1];
-
-                                              if (action == 'yes') {
-                                                $('#trackingnr_' + id).prop('disabled', false);
-                                                $('#freight_' + id).prop('disabled', false);
-                                                $('#deliverydate_' + id).prop('disabled', true);
-                                              } else if (action == 'no') {
-                                                $('#trackingnr_' + id).prop('disabled', true);
-                                                $('#freight_' + id).prop('disabled', true);
-                                                $('#deliverydate_' + id).prop('disabled', false);
-                                              }
-                                            });
-
+                                            
                                             $('.submit').click(function() {
                                               var id = this.id.split('_')[1];
                                               var dateRegExp = /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/
@@ -371,5 +357,9 @@ namespace rpa_functions.rpa_pc243
 
             return JsonConvert.SerializeObject(tmpMaterialDeliveryEntities);
         }
+
+
+
+
     }
 }
