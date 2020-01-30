@@ -248,11 +248,20 @@ namespace rpa_functions
             string materialDeliveryHTML = HtmlTemplate.GetPage(mdTableOps.QueryMaterialDeliveryOnWebid(webid, false).Result);
 
             Console.Write(materialDeliveryHTML);
+            if (materialDeliveryHTML != null)
+            {
+                var response = new HttpResponseMessage(HttpStatusCode.OK);
+                response.Content = new StringContent(materialDeliveryHTML);
+                response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
+                return response;
+            }
+            else
+            {
+                var response = new HttpResponseMessage(HttpStatusCode.NotFound);
+                return response;
 
-            var response = new HttpResponseMessage(HttpStatusCode.OK);
-            response.Content = new StringContent(materialDeliveryHTML);
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
-            return response;
+            }
+
         }
 
         // Will be called by the Customer WWW Interface (EXPOSED TO INTERNET)
