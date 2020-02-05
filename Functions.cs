@@ -248,7 +248,7 @@ namespace rpa_functions
             string materialDeliveryHTML = HtmlTemplate.GetPage(mdTableOps.QueryMaterialDeliveryOnWebid(webid, false).Result);
 
             Console.Write(materialDeliveryHTML);
-            if (materialDeliveryHTML != null)
+            if (materialDeliveryHTML != null && materialDeliveryHTML.Length > 0)
             {
                 var response = new HttpResponseMessage(HttpStatusCode.OK);
                 response.Content = new StringContent(materialDeliveryHTML);
@@ -258,7 +258,7 @@ namespace rpa_functions
             else
             {
                 var response = new HttpResponseMessage(HttpStatusCode.NotFound);
-                return response;
+                return null;
 
             }
 

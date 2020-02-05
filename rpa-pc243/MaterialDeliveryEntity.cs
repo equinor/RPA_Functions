@@ -97,7 +97,7 @@ namespace rpa_functions.rpa_pc243
                                         $('.delivery').click(function() {
                                               var id = this.id.split('_')[2];
                                               var action = this.id.split('_')[1];
-
+                                                console.log(action)
                                               if (action == 'yes') {
                                                 $('#deliverydate_' + id).prop('disabled', true);
                                               } else if (action == 'no') {
@@ -108,11 +108,11 @@ namespace rpa_functions.rpa_pc243
                                             $('.submit').click(function() {
                                               var id = this.id.split('_')[1];
                                               var dateRegExp = /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/
-
+                                               console.log($('#deliverydate_' + id)) 
                                               //alert(dateRegExp.test('22/01/1981'));
-                                              if ($('#deliverydate_' + id).prop('checked')) {
+                                              if ($('#delivery_no_' + id).prop('checked')) {
                                                 var deliveryDate = $('#deliverydate_' + id).val();
-
+                                                   console.log(deliveryDate)
                                                 if (dateRegExp.test(deliveryDate)) {
                                                   // Send with date
                                                   $('#deliverydate_' + id).css({
