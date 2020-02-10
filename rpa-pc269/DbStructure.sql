@@ -42,13 +42,14 @@ GO
 CREATE TABLE [DailyReports] (
 	dailyreport_Id bigint IDENTITY(1,1) NOT NULL,
 	asset_Id int NOT NULL,
-	prod_oil int NOT NULL,
-	prod_gas int NOT NULL,
-	prod_water int NOT NULL,
-	injection_water int,
-	injection_gas int,
-	fuel_gas int,
-	flare_gas int,
+	facilityName nvarchar(50) NOT NULL, -- Added
+	prod_oil decimal(10,2), -- change type
+	prod_gas decimal(10,2), -- chage type
+	prod_water decimal(10,2), -- chage type
+	injection_water decimal(10,2), -- chage type
+	injection_gas decimal(10,2), -- chage type
+	fuel_gas decimal(10,2), -- chage type
+	flare_gas decimal(10,2), -- chage type
 	production_date date NOT NULL,
 	production_report_uri varchar(255) NOT NULL
   CONSTRAINT [PK_DAILYREPORT] PRIMARY KEY CLUSTERED

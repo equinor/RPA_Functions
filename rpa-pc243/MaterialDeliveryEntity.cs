@@ -322,7 +322,7 @@ namespace rpa_functions.rpa_pc243
             returnEntity.shorttext = bodyData.shorttext;
             returnEntity.order_qty = bodyData.order_qty;
             returnEntity.order_unit = bodyData.order_unit;
-            if (Convert.ToString(bodyData.delivery_date) != "") returnEntity.delivery_date = DateTime.Parse(Convert.ToString(bodyData.delivery_date));
+            if (Convert.ToString(bodyData.delivery_date) != "") returnEntity.delivery_date = DateTime.TryParse(Convert.ToString(bodyData.delivery_date));
 
             return returnEntity;
 

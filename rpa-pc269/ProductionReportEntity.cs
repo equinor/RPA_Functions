@@ -59,7 +59,7 @@ namespace rpa_functions.rpa_pc269
 
     }
 
-    public class WellsDetails // change name
+    public class WellsDetails 
     {
         [Key]
         public long wellTest_Id { get; set; }
@@ -154,7 +154,7 @@ namespace rpa_functions.rpa_pc269
         // Comment does not require mapping. Implement in API
         // -----
 
-        // Implement in API
+   
         public static List<WaterInjectionWell> ObjectToWaterInjectionWellList(dynamic waterInjectionWells, int reportId)
         {
             List<WaterInjectionWell> waterInjectionWellList = new List<WaterInjectionWell>();

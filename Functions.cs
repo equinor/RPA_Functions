@@ -200,15 +200,19 @@ namespace rpa_functions
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-            Comment newComments = JsonConvert.DeserializeObject<Comment>(requestBody);
+            List<Comment> newComments = JsonConvert.DeserializeObject<List<Comment>>(requestBody);
 
-            newComments.dailyreport_Id = dailyreport_id;
+            foreach(Comment commentElement in newComments)
+            {
+                commentElement.dailyreport_Id = dailyreport_id;
 
-            var entity = await _context.Comments.AddAsync(newComments, cts);
+                await _context.Comments.AddAsync(commentElement, cts);
 
-            await _context.SaveChangesAsync(cts);
+                await _context.SaveChangesAsync(cts);
+            }
+            
 
-            return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity));
+            return new OkObjectResult("ok");
         }
 
 
