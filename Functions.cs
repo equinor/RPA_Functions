@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using rpa_functions.rpa_pc243;
 using rpa_functions.rpa_pc269;
 using rpa_functions.rpa_pc35;
+using rpa_functions.rpa_pc239;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,20 +25,41 @@ namespace rpa_functions
  
     public class PC239WebService
     {
+        private ReturnForCreditTableOperations rfcOps = new ReturnForCreditTableOperations();
+
         [FunctionName("PC239_GetReturnForCredit")]
-        public IActionResult GetReturnForCredit(
+        public async Task<IActionResult> GetReturnForCredit(
     [HttpTrigger(AuthorizationLevel.Function, "get", Route = "PC239_GetReturnForCredit/{guid}")] HttpRequest req,
     ILogger log, string guid)
         {
             log.LogInformation("PC239 GetReturnForCredit called");
 
-            // Do the magic and return something. This one calls table ops and return an object that is converted into json.
-
-
-            return new OkObjectResult(JsonConvert.SerializeObject(null)); // put something in here.
+            var rfcInfo = await rfcOps.QueryReturnForCreditOnGuid(guid);
+            return new OkObjectResult(JsonConvert.SerializeObject(rfcInfo)); // put something in here.
         }
 
+        [FunctionName("PC239_PostReturnForCredit")]
+        public async Task<IActionResult> PostReturnForCredit(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC239_PostReturnForCredit")] HttpRequest req,
+            CancellationToken cts, ILogger log)
+        {
+            log.LogInformation("PC239 PostReturnForCredit called");
 
+            dynamic bodyData = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
+            var retVal = await rfcOps.InsertBatch(bodyData);
+            return new OkObjectResult("{ \"webID\": " + JsonConvert.SerializeObject(retVal) + "}");
+        }
+
+        [FunctionName("PC239_DeleteReturnForCredit")]
+        public async Task<IActionResult> DeleteReturnForCredit(
+            [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "PC239_DeleteReturnForCredit/{guid}")] HttpRequest req,
+            ILogger log, string guid)
+        {
+            log.LogInformation("PC239_DeleteReturnForCredit called");
+            var retVal = await rfcOps.RemoveTableEntityOnGuid(guid);
+
+            return new ObjectResult(retVal);
+        }
     }
 
     
