@@ -23,7 +23,7 @@ namespace rpa_functions
         public async Task<TableResult> InsertorReplace(ITableEntity tableEntity, string tableName)
         {
             CloudTable table = this.tableClient.GetTableReference(tableName);
-
+            
             TableOperation insertOrReplaceOperation = TableOperation.InsertOrReplace(tableEntity);
 
             try
@@ -37,6 +37,28 @@ namespace rpa_functions
                 Console.WriteLine(ex);
                 return null;
             }
+
+        }
+
+        public async Task<TableResult> Remove(ITableEntity tableEntity, string tableName) 
+        {
+            CloudTable table = this.tableClient.GetTableReference(tableName);
+
+            TableOperation removeOperation = TableOperation.Delete(tableEntity);
+
+            try
+            {
+                // Execute the operation.
+                return await table.ExecuteAsync(removeOperation);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+
+
 
         }
 

@@ -50,6 +50,7 @@ namespace rpa_functions.rpa_pc243
         public async Task<List<MaterialDeliveryTableEntity>> QueryMaterialDeliveryOnWebid(string webid, bool robotQuery)
         {
             if (robotQuery == false) { 
+                
                 string guidFilter = TableQuery.GenerateFilterCondition(MaterialDeliveryConstants.WEBID_FIELD_NAME, QueryComparisons.Equal, webid);
                 string statusFilter = TableQuery.GenerateFilterConditionForInt(MaterialDeliveryConstants.STATUS_FIELD_NAME, QueryComparisons.Equal, MaterialDeliveryConstants.STATUS_WAITING);
 
@@ -59,6 +60,7 @@ namespace rpa_functions.rpa_pc243
                                                                                                                                     tableName);
 
             return queryResult;
+
             } else if (robotQuery == true)
             {
                 List<MaterialDeliveryTableEntity> queryResult = await table.RetrieveEntities<MaterialDeliveryTableEntity>(MaterialDeliveryConstants.WEBID_FIELD_NAME, QueryComparisons.Equal, webid, tableName);
@@ -107,6 +109,51 @@ namespace rpa_functions.rpa_pc243
 
 
             return queryResult;
+        }
+
+        public async Task<List<MaterialDeliveryTableEntity>> QueryMaterialDeliveryOnStatusAndRemove() 
+        {
+            List<MaterialDeliveryTableEntity> queryResult = QueryMaterialDeliveryOnStatus(MaterialDeliveryConstants.STATUS_WAITING).Result;
+             
+            foreach (MaterialDeliveryTableEntity element in queryResult)
+            {
+                TimeSpan ts = DateTime.Now - element.Timestamp;
+                if ( ts.Days >= 14)
+                {
+                    try
+                    {
+                        
+                        TableResult trRm = await table.Remove(element, tableName);
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine("Error in writing to table storage " + ex.ToString());
+                    }                  
+                }                
+            }
+            List<MaterialDeliveryTableEntity> queryResult2 = QueryMaterialDeliveryOnStatus(MaterialDeliveryConstants.STATUS_FETCHED).Result;
+
+            foreach (MaterialDeliveryTableEntity element in queryResult2)
+            {
+                TimeSpan ts = DateTime.Now - element.Timestamp;
+                if (ts.Days >= 14)
+                {
+                    try
+                    {
+                        
+                        TableResult trRm = await table.Remove(element, tableName);
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine("Error in writing to table storage " + ex.ToString());
+                    }
+                }
+            }
+            return null;
         }
 
 

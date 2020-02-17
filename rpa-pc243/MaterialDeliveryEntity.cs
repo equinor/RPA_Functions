@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace rpa_functions.rpa_pc243
@@ -92,35 +93,33 @@ namespace rpa_functions.rpa_pc243
         private const string htmltail = @"</table>
                                           <br>
                                           <script>
-                                            $('.delivery').click(function() {
+
+                                        $('.delivery').click(function() {
                                               var id = this.id.split('_')[2];
                                               var action = this.id.split('_')[1];
-
+                                                console.log(action)
                                               if (action == 'yes') {
-                                                $('#trackingnr_' + id).prop('disabled', false);
-                                                $('#freight_' + id).prop('disabled', false);
                                                 $('#deliverydate_' + id).prop('disabled', true);
                                               } else if (action == 'no') {
-                                                $('#trackingnr_' + id).prop('disabled', true);
-                                                $('#freight_' + id).prop('disabled', true);
                                                 $('#deliverydate_' + id).prop('disabled', false);
                                               }
                                             });
-
+                                            
                                             $('.submit').click(function() {
                                               var id = this.id.split('_')[1];
                                               var dateRegExp = /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/
-
+                                               console.log($('#deliverydate_' + id)) 
                                               //alert(dateRegExp.test('22/01/1981'));
                                               if ($('#delivery_no_' + id).prop('checked')) {
                                                 var deliveryDate = $('#deliverydate_' + id).val();
-
+                                                   console.log(deliveryDate)
                                                 if (dateRegExp.test(deliveryDate)) {
                                                   // Send with date
                                                   $('#deliverydate_' + id).css({
                                                     'color': 'black'
                                                   });
                                                   $('#button_' + id).prop('disabled', true);
+                                                  makehttp(id, true); 
                                                 } else {
                                                   // Not valid date, make user correct it
                                                   $('#deliverydate_' + id).css({
@@ -322,7 +321,7 @@ namespace rpa_functions.rpa_pc243
             returnEntity.shorttext = bodyData.shorttext;
             returnEntity.order_qty = bodyData.order_qty;
             returnEntity.order_unit = bodyData.order_unit;
-            if (Convert.ToString(bodyData.delivery_date) != "") returnEntity.delivery_date = DateTime.TryParse(Convert.ToString(bodyData.delivery_date));
+            returnEntity.delivery_date = ConvertToDate(bodyData.delivery_date);
 
             return returnEntity;
 
@@ -346,7 +345,7 @@ namespace rpa_functions.rpa_pc243
         {
 
             materialDelivery.delivered_ondate = bodyData.delivered_ondate;
-            if (Convert.ToString(bodyData.new_delivery_date) != "")  materialDelivery.new_delivery_date = DateTime.Parse(Convert.ToString(bodyData.new_delivery_date));
+            materialDelivery.new_delivery_date = ConvertToDate(bodyData.new_delivery_date);
             materialDelivery.tracking_nr = bodyData.tracking_nr;
             materialDelivery.freight_name = bodyData.freight_name;
 
@@ -370,5 +369,26 @@ namespace rpa_functions.rpa_pc243
 
             return JsonConvert.SerializeObject(tmpMaterialDeliveryEntities);
         }
+
+
+
+        private static DateTime? ConvertToDate(dynamic dateDynamic)
+        {
+            DateTime outputDate;
+            CultureInfo MyCultureInfo = new CultureInfo("no-NO");
+
+            if (DateTime.TryParse(Convert.ToString(dateDynamic), out outputDate)) {
+
+                outputDate = new DateTime(outputDate.Year, outputDate.Month, outputDate.Day, 5,0,0);
+                return outputDate;
+            }
+
+            return null; // default return value if missing or invalid type
+
+        }
+
+
+
+
     }
 }
