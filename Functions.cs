@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace rpa_functions
 {
- 
+
     public class PC239WebService
     {
         [FunctionName("PC239_GetReturnForCredit")]

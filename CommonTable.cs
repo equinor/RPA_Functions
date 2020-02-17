@@ -4,17 +4,19 @@ using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 
-namespace rpa_functions
+
+namespace Services
 {
     class CommonTable
     {
-        static string tableConnectionString = Environment.GetEnvironmentVariable("STORAGE_CONNECTION");
+        static string tableConnectionString = Environment.GetEnvironmentVariable("STORAGE_CONNECTION", EnvironmentVariableTarget.Process);
         CloudTableClient tableClient;
         
 
         public CommonTable()
         {
-            this.tableClient = getStorageClient();
+           
+            this.tableClient = getStorageClient(tableConnectionString);
             
         }
 
@@ -171,10 +173,10 @@ namespace rpa_functions
 
 
         // Generic table handling
-        private static CloudTableClient getStorageClient()
+        private static CloudTableClient getStorageClient(string storageAccountConnectionString)
         {
             // Retrieve storage account information from connection string.
-            CloudStorageAccount storageAccount = CreateStorageAccountFromConnectionString(tableConnectionString);
+            CloudStorageAccount storageAccount = CreateStorageAccountFromConnectionString(storageAccountConnectionString);
 
             // Create a table client for interacting with the table service
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
@@ -190,6 +192,7 @@ namespace rpa_functions
             }
             catch (FormatException)
             {
+
                 Console.WriteLine("Invalid storage account information provided. Please confirm the AccountName and AccountKey are valid in the app.config file - then restart the application.");
                 throw;
             }
