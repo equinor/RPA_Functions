@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.WindowsAzure.Storage.Table;
 using System.Threading.Tasks;
-using System.Text;
+using Services;
 
 namespace rpa_functions.rpa_pc239
 {
