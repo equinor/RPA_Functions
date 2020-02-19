@@ -34,8 +34,9 @@ namespace rpa_functions.rpa_pc239
             if (queryResult is null) { return null; }
             foreach(ReturnForCreditEntityTableEntity entity in queryResult)
             {
+                TableResult tr = await table.Remove(entity, tableName).ConfigureAwait(false);
                 entity.RowKey = Guid.NewGuid().ToString();
-                TableResult tr = await table.InsertorReplace(entity, tableName).ConfigureAwait(false);
+                tr = await table.InsertorReplace(entity, tableName).ConfigureAwait(false);
                 output.Add(entity.RowKey);
             }
             return output;
