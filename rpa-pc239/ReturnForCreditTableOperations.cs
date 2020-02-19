@@ -26,6 +26,20 @@ namespace rpa_functions.rpa_pc239
             queryResult = await QueryReturnForCreditOnReturnsNumber(queryResult[0].ReturnsNumber);
             return queryResult;
         }
+
+        public async Task<List<string>> UpdateGuidOnGuid(string guid)
+        {
+            List<string> output = new List<string>();
+            List<ReturnForCreditEntityTableEntity> queryResult = await table.RetrieveEntities<ReturnForCreditEntityTableEntity>(ReturnForCreditEntityConstants.ID_FIELD_NAME, QueryComparisons.Equal, guid, tableName);
+            if (queryResult is null) { return null; }
+            foreach(ReturnForCreditEntityTableEntity entity in queryResult)
+            {
+                entity.RowKey = Guid.NewGuid().ToString();
+                TableResult tr = await table.InsertorReplace(entity, tableName).ConfigureAwait(false);
+                output.Add(entity.RowKey);
+            }
+            return output;
+        }
         private async Task<List<ReturnForCreditEntityTableEntity>> QueryReturnForCreditOnStatus(int status)
         {
             List<ReturnForCreditEntityTableEntity> queryResult = await table.RetrieveEntities<ReturnForCreditEntityTableEntity>(ReturnForCreditEntityConstants.STATUS_FIELD_NAME, QueryComparisons.Equal, status, tableName);

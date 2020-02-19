@@ -50,6 +50,16 @@ namespace rpa_functions
             return new OkObjectResult("{ \"webID\": " + JsonConvert.SerializeObject(retVal) + "}");
         }
 
+        [FunctionName("PC239_PutUpdateReturnForCreditGuid")]
+        public async Task<IActionResult> PutUpdateReturnForCreditGuid(
+            [HttpTrigger(AuthorizationLevel.Function, "put", Route = "PC239_PutUpdateReturnForCreditGuid/{guid}")] HttpRequest req,
+            ILogger log, string guid)
+        {
+            log.LogInformation("PC239_PutUpdateReturnForCreditGuid called");
+            var retVal = await rfcOps.UpdateGuidOnGuid(guid);
+            return new OkObjectResult("{ \"webID\": " + JsonConvert.SerializeObject(retVal) + "}");
+        }
+
         [FunctionName("PC239_DeleteReturnForCredit")]
         public async Task<IActionResult> DeleteReturnForCredit(
             [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "PC239_DeleteReturnForCredit/{guid}")] HttpRequest req,
