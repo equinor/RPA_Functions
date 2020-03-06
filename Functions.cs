@@ -273,50 +273,6 @@ namespace rpa_functions
     {
         private MaterialDeliveryTableOperations mdTableOps = new MaterialDeliveryTableOperations();
 
-        // Will be called by the Customer WWW Interface (EXPOSED TO INTERNET)
-        [FunctionName("PC243_GetMaterialDelivery")]
-        public HttpResponseMessage GetMaterialDelivery(
-           [HttpTrigger(AuthorizationLevel.Function, "get", Route = "PC243_MaterialDelivery/{webid}")] HttpRequest req,
-           ILogger log, string webid)
-        {
-            log.LogInformation("PC243 Get task trigged");
-
-            string materialDeliveryHTML = HtmlTemplate.GetPage(mdTableOps.QueryMaterialDeliveryOnWebid(webid, false).Result);
-
-            Console.Write(materialDeliveryHTML);
-            if (materialDeliveryHTML != null && materialDeliveryHTML.Length > 0)
-            {
-                var response = new HttpResponseMessage(HttpStatusCode.OK);
-                response.Content = new StringContent(materialDeliveryHTML);
-                response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
-                return response;
-            }
-            else
-            {
-                var response = new HttpResponseMessage(HttpStatusCode.NotFound);
-                return null;
-
-            }
-
-        }
-
-        // Will be called by the Customer WWW Interface (EXPOSED TO INTERNET)
-        [FunctionName("PC243_PostMaterialDeliveryUpdate")]
-        public async Task<IActionResult> PostMaterialDeliveryUpdate(
-            [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "PC243_PostMaterialDeliveryUpdate/{webid}/{guid}")] HttpRequest req,
-            string webid,
-            string guid,
-            ILogger log)
-        {
-            log.LogInformation("PC243 post material delivery  request received");
-
-            dynamic bodyData = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
-
-            Object retVal = await mdTableOps.UpdateMaterialDelivery(guid, bodyData);
-
-            return (ActionResult)new OkObjectResult(retVal);
-        }
-
         // Will be called by the robot (IP block and request key required)
         [FunctionName("PC243_PostMaterialDelivery")]
         public async Task<IActionResult> PostMaterialDelivery(
@@ -349,7 +305,6 @@ namespace rpa_functions
             Console.Write(materialDeliveryresp);
 
             return new OkObjectResult(materialDeliveryresp);
-
         }
 
 
@@ -366,7 +321,6 @@ namespace rpa_functions
             Console.Write(materialDeliveryresp);
 
             return new OkObjectResult(materialDeliveryresp);
-
         }
 
 
