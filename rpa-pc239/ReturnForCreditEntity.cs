@@ -132,6 +132,7 @@ namespace rpa_functions.rpa_pc239
             returnEntity.Item = bodyData.Item;
             returnEntity.Text = bodyData.Text;
             returnEntity.Quantity = bodyData.Quantity;
+            returnEntity.RITM = bodyData.RITM;
             returnEntity.Total = bodyData.Total;
             returnEntity.Status = ReturnForCreditEntityConstants.STATUS_WAITING;
 
