@@ -35,7 +35,9 @@ namespace rpa_functions.rpa_pc239
         public bool ReturnApproved { get; set; }
         public bool ReturnRejected { get; set; }
         public string AddressPostCode { get; set; }
-        public string Comments { get; set; }
+        public string CommentUser { get; set; }
+        public string CommentDate { get; set; }
+        public string CommentContent { get; set; }
         public string ReasonForReturn { get; set; }
         public string ConditionOfGoods { get; set; }
         public string TransportationCoveredBy { get; set; }
@@ -58,7 +60,9 @@ namespace rpa_functions.rpa_pc239
         public bool ReturnApproved { get; set; }
         public bool ReturnRejected { get; set; }
         public string AddressPostCode { get; set; }
-        public string Comments{ get; set; }
+        public string CommentUser { get; set; }
+        public string CommentDate { get; set; }
+        public string CommentContent { get; set; }
         public string ReasonForReturn { get; set; }
         public string ConditionOfGoods { get; set; }
         public string TransportationCoveredBy { get; set; }
@@ -76,7 +80,9 @@ namespace rpa_functions.rpa_pc239
                 AddressCity = returnForCreditEntry.AddressCity,
                 AddressPostCode = returnForCreditEntry.AddressPostCode,
                 AddressStreet = returnForCreditEntry.AddressStreet,
-                Comments = returnForCreditEntry.Comments,
+                CommentUser = returnForCreditEntry.CommentUser,
+                CommentDate = returnForCreditEntry.CommentDate,
+                CommentContent = returnForCreditEntry.CommentContent,
                 ConditionOfGoods = returnForCreditEntry.ConditionOfGoods,
                 ContactPerson = returnForCreditEntry.ContactPerson,
                 CreditAmount = returnForCreditEntry.CreditAmount,
@@ -103,7 +109,9 @@ namespace rpa_functions.rpa_pc239
                 AddressCity = returnGoodsTableEntity.AddressCity,
                 AddressPostCode = returnGoodsTableEntity.AddressPostCode,
                 AddressStreet = returnGoodsTableEntity.AddressStreet,
-                Comments = returnGoodsTableEntity.Comments,
+                CommentUser = returnGoodsTableEntity.CommentUser,
+                CommentDate = returnGoodsTableEntity.CommentDate,
+                CommentContent = returnGoodsTableEntity.CommentContent,
                 ConditionOfGoods = returnGoodsTableEntity.ConditionOfGoods,
                 ContactPerson = returnGoodsTableEntity.ContactPerson,
                 CreditAmount = returnGoodsTableEntity.CreditAmount,
@@ -172,7 +180,9 @@ namespace rpa_functions.rpa_pc239
             returnForCredit.AddressStreet = bodyData.AddressStreet;
             returnForCredit.AddressPostCode = bodyData.AddressPostCode;
             returnForCredit.AddressCity = bodyData.AddressCity;
-            returnForCredit.Comments = bodyData.Comments;
+            returnForCredit.CommentUser = bodyData.CommentUuser;
+            returnForCredit.CommentDate = bodyData.CommentDate;
+            returnForCredit.CommentContent = bodyData.CommentContent;
             //define as done
             returnForCredit.Status = ReturnForCreditEntityConstants.STATUS_DONE;
             return returnForCredit;
