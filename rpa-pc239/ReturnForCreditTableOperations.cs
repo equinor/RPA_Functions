@@ -46,6 +46,7 @@ namespace rpa_functions.rpa_pc239
             List<ReturnForCreditEntityTableEntity> queryResult = await table.RetrieveEntities<ReturnForCreditEntityTableEntity>(ReturnForCreditEntityConstants.STATUS_FIELD_NAME, QueryComparisons.Equal, status, tableName);
             return queryResult;   
         }
+        //weguid added to function return
         public async Task<List<string>> InsertBatch(dynamic bodyData)
         {
             List<ReturnForCreditEntity> returnForCreditEntities;
@@ -69,6 +70,7 @@ namespace rpa_functions.rpa_pc239
 
                     returnCodes.Add(element.webguid);
                 }
+
                 catch (Exception ex)
                 {
                     Console.WriteLine("Error in writing to table storage: " + ex.ToString());
