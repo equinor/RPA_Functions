@@ -37,7 +37,7 @@ namespace rpa_functions
             var rfcInfo = await rfcOps.QueryReturnForCreditOnGuid(guid);
             return new OkObjectResult(JsonConvert.SerializeObject(rfcInfo)); // put something in here.
         }
-
+        //webguid added to function return
         [FunctionName("PC239_PostReturnForCredit")]
         public async Task<IActionResult> PostReturnForCredit(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC239_PostReturnForCredit")] HttpRequest req,
