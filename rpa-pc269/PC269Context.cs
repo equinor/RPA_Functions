@@ -13,14 +13,14 @@ namespace rpa_functions.rpa_pc269
 
         public PC269UnifiedContext(DbContextOptions<PC269UnifiedContext> options) : base(options) { }
 
-        //public virtual DbSet<Assets> Assets { get; set; }
-        //public virtual DbSet<Comments> Comments { get; set; }
-        //public virtual DbSet<DailyGiWells> DailyGiWells { get; set; }
-        //public virtual DbSet<DailyProductionWells> DailyProductionWells { get; set; }
+        public virtual DbSet<Assets> Assets { get; set; }
+        public virtual DbSet<Comments> Comments { get; set; }
+        public virtual DbSet<DailyGiWells> DailyGiWells { get; set; }
+        public virtual DbSet<DailyProductionWells> DailyProductionWells { get; set; }
         public virtual DbSet<DailyReportsTotal> DailyReportsTotal { get; set; }
-        //public virtual DbSet<DailyWiWells> DailyWiWells { get; set; }
-        //public virtual DbSet<Units> Units { get; set; }
-        //public virtual DbSet<WellTests> WellTests { get; set; }
+        public virtual DbSet<DailyWiWells> DailyWiWells { get; set; }
+        public virtual DbSet<Units> Units { get; set; }
+        public virtual DbSet<WellTests> WellTests { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
