@@ -13,7 +13,7 @@ namespace rpa_functions
         public override void Configure(IFunctionsHostBuilder builder)
         {
             string SqlConnection = Environment.GetEnvironmentVariable("PC269_DBCONNECTION");
-            builder.Services.AddDbContext<PC269Context>(
+            builder.Services.AddDbContext<PC269UnifiedContext>(
                 options => options.UseSqlServer(SqlConnection));
         }
     }

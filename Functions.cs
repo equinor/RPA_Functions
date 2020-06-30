@@ -65,13 +65,15 @@ namespace rpa_functions
     
     public class PC269_Webservice
     {
-        private readonly PC269Context _context;
+        private readonly PC269UnifiedContext _context;
+      
 
-        public PC269_Webservice(PC269Context context)
+        public PC269_Webservice(PC269UnifiedContext context)
         {
             _context = context;
         }
 
+        /**
         [FunctionName("PC269_GetAssetByBatch")]
         public IActionResult GetAssets(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "PC269_GetAssetByBatch/{batch}")] HttpRequest req,
@@ -104,6 +106,8 @@ namespace rpa_functions
             return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity));
         }
 
+    */
+
         [FunctionName("PC269_PostDailyReport")]
         public async Task<IActionResult> PostDailyReportAsync(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostDailyReport/{asset_id}")] HttpRequest req,
@@ -115,19 +119,24 @@ namespace rpa_functions
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-            DailyReport newDailyReport = JsonConvert.DeserializeObject<DailyReport>(requestBody);
+            //DailyReport newDailyReport = JsonConvert.DeserializeObject<DailyReport>(requestBody);
+
+            dynamic newDailyReport = JsonConvert.DeserializeObject(requestBody);
 
             newDailyReport.asset_Id = asset_id;
 
-            var entity = await _context.DailyReports.AddAsync(newDailyReport, cts);
+            DailyReportsTotal dailyReportTotal = PC269Mappings.ObjectToDailyReportsTotal(newDailyReport, asset_id);
+
+            var entity = await _context.DailyReportsTotal.AddAsync(dailyReportTotal, cts);
 
             await _context.SaveChangesAsync(cts);
 
 
 
-            return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity));
+            return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity)); 
         }
 
+        /*
         [FunctionName("PC269_PostWellsDetails")]
         public async Task<IActionResult> PostWellsDetailAsync(
          [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostWellsDetails/{dailyreport_id}")] HttpRequest req,
@@ -236,7 +245,7 @@ namespace rpa_functions
 
             return new OkObjectResult("ok");
         }
-
+        */
 
         [FunctionName("PC269_UploadFile")]
         public async Task<IActionResult> UploadFileToBlob(
