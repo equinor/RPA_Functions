@@ -26,11 +26,27 @@ namespace rpa_functions.rpa_pc239
             queryResult = await QueryReturnForCreditOnReturnsNumber(queryResult[0].ReturnsNumber);
             return queryResult;
         }
+
+        public async Task<List<string>> UpdateGuidOnGuid(string guid)
+        {
+            List<string> output = new List<string>();
+            List<ReturnForCreditEntityTableEntity> queryResult = await table.RetrieveEntities<ReturnForCreditEntityTableEntity>(ReturnForCreditEntityConstants.ID_FIELD_NAME, QueryComparisons.Equal, guid, tableName);
+            if (queryResult is null) { return null; }
+            foreach(ReturnForCreditEntityTableEntity entity in queryResult)
+            {
+                TableResult tr = await table.Remove(entity, tableName).ConfigureAwait(false);
+                entity.RowKey = Guid.NewGuid().ToString();
+                tr = await table.InsertorReplace(entity, tableName).ConfigureAwait(false);
+                output.Add(entity.RowKey);
+            }
+            return output;
+        }
         private async Task<List<ReturnForCreditEntityTableEntity>> QueryReturnForCreditOnStatus(int status)
         {
             List<ReturnForCreditEntityTableEntity> queryResult = await table.RetrieveEntities<ReturnForCreditEntityTableEntity>(ReturnForCreditEntityConstants.STATUS_FIELD_NAME, QueryComparisons.Equal, status, tableName);
             return queryResult;   
         }
+        //weguid added to function return
         public async Task<List<string>> InsertBatch(dynamic bodyData)
         {
             List<ReturnForCreditEntity> returnForCreditEntities;
@@ -52,8 +68,9 @@ namespace rpa_functions.rpa_pc239
                 {
                     TableResult tr = await table.InsertorReplace(Mappings.ToReturnForCreditEntityTableEntity(element), tableName).ConfigureAwait(false);
 
-                    returnCodes.Add(element.id);
+                    returnCodes.Add(element.webguid);
                 }
+
                 catch (Exception ex)
                 {
                     Console.WriteLine("Error in writing to table storage: " + ex.ToString());

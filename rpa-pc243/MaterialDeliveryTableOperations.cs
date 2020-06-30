@@ -48,37 +48,6 @@ namespace rpa_functions.rpa_pc243
         }
 
 
-        public async Task<List<MaterialDeliveryTableEntity>> QueryMaterialDeliveryOnWebid(string webid, bool robotQuery)
-        {
-            if (robotQuery == false) { 
-                
-                string guidFilter = TableQuery.GenerateFilterCondition(MaterialDeliveryConstants.WEBID_FIELD_NAME, QueryComparisons.Equal, webid);
-                string statusFilter = TableQuery.GenerateFilterConditionForInt(MaterialDeliveryConstants.STATUS_FIELD_NAME, QueryComparisons.Equal, MaterialDeliveryConstants.STATUS_WAITING);
-
-                List<MaterialDeliveryTableEntity> queryResult = await table.RetrieveEntitiesCombinedFilter<MaterialDeliveryTableEntity>(guidFilter,
-                                                                                                                                    TableOperators.And,
-                                                                                                                                    statusFilter,
-                                                                                                                                    tableName);
-
-            return queryResult;
-
-            } else if (robotQuery == true)
-            {
-                List<MaterialDeliveryTableEntity> queryResult = await table.RetrieveEntities<MaterialDeliveryTableEntity>(MaterialDeliveryConstants.WEBID_FIELD_NAME, QueryComparisons.Equal, webid, tableName);
-
-             return queryResult;
-            }
-
-            return null;
-        }
-        public async Task<List<MaterialDeliveryTableEntity>> QueryMaterialDeliveryOnGuid(string guid)
-        {
-
-            List<MaterialDeliveryTableEntity> queryResult = await table.RetrieveEntities<MaterialDeliveryTableEntity>(MaterialDeliveryConstants.ID_FIELD_NAME, QueryComparisons.Equal, guid, tableName);
-
-            
-            return queryResult;
-        }
 
         private async Task<List<MaterialDeliveryTableEntity>> QueryMaterialDeliveryOnStatus(int status) 
         {
@@ -156,31 +125,6 @@ namespace rpa_functions.rpa_pc243
             }
             return null;
         }
-
-
-
-
-        public async Task<Object> UpdateMaterialDelivery(string guid, dynamic bodyData)
-        {
-
-            // Find package, if found - update else fail.
-            List<MaterialDeliveryTableEntity> result = await QueryMaterialDeliveryOnGuid(guid);
-
-            if (result.Count == 1)
-            {
-                MaterialDeliveryTableEntity updatedMaterialDelivery = Mappings.updateMaterialDelivery(result[0], bodyData);
-                TableResult tr = await table.InsertorReplace(updatedMaterialDelivery, tableName);
-
-                return tr.Result;
-            
-            }
-            else
-            {
-                return null;
-            }
-
-        }
-
        
     }
 }

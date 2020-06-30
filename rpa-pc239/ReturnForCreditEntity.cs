@@ -11,11 +11,8 @@ namespace rpa_functions.rpa_pc239
         public const string WEBID_FIELD_NAME = "PartitionKey";
 
         public const string STATUS_FIELD_NAME = "status";
-        public const int STATUS_WAITING_PO_RESPONSE = 0;
-        public const int STATUS_WAITING_EXTERNAL = 1;
-        public const int STATUS_DONE = 2;
-        public const int STATUS_FETCHED = 3;
-        public const int STATUS_EXPIRED = 4;
+        public const int STATUS_WAITING = 0;
+        public const int STATUS_DONE = 1;
         public const string RETURNS_NUMBER_FIELD_NAME = "ReturnsNumber";
         public const string PARTITION_KEY_VALUE = "PC0239";
     }
@@ -34,12 +31,17 @@ namespace rpa_functions.rpa_pc239
         public string ContactPerson { get; set; }
         public string AddressStreet { get; set; }
         public string AddressCity { get; set; }
+        public string RITM { get; set; }
+        public bool ReturnApproved { get; set; }
+        public bool ReturnRejected { get; set; }
         public string AddressPostCode { get; set; }
-        public string Comments { get; set; }
+        public string CommentUser { get; set; }
+        public string CommentDate { get; set; }
+        public string CommentContent { get; set; }
         public string ReasonForReturn { get; set; }
         public string ConditionOfGoods { get; set; }
         public string TransportationCoveredBy { get; set; }
-        public int Status { get; set; } = ReturnForCreditEntityConstants.STATUS_WAITING_PO_RESPONSE;
+        public int Status { get; set; } = ReturnForCreditEntityConstants.STATUS_WAITING;
     }
     public class ReturnForCreditEntityTableEntity : TableEntity
     {
@@ -54,8 +56,13 @@ namespace rpa_functions.rpa_pc239
         public string ContactPerson { get; set; }
         public string AddressStreet { get; set; }
         public string AddressCity { get; set; }
+        public string RITM { get; set; }
+        public bool ReturnApproved { get; set; }
+        public bool ReturnRejected { get; set; }
         public string AddressPostCode { get; set; }
-        public string Comments{ get; set; }
+        public string CommentUser { get; set; }
+        public string CommentDate { get; set; }
+        public string CommentContent { get; set; }
         public string ReasonForReturn { get; set; }
         public string ConditionOfGoods { get; set; }
         public string TransportationCoveredBy { get; set; }
@@ -73,11 +80,16 @@ namespace rpa_functions.rpa_pc239
                 AddressCity = returnForCreditEntry.AddressCity,
                 AddressPostCode = returnForCreditEntry.AddressPostCode,
                 AddressStreet = returnForCreditEntry.AddressStreet,
-                Comments = returnForCreditEntry.Comments,
+                CommentUser = returnForCreditEntry.CommentUser,
+                CommentDate = returnForCreditEntry.CommentDate,
+                CommentContent = returnForCreditEntry.CommentContent,
                 ConditionOfGoods = returnForCreditEntry.ConditionOfGoods,
                 ContactPerson = returnForCreditEntry.ContactPerson,
                 CreditAmount = returnForCreditEntry.CreditAmount,
                 Item = returnForCreditEntry.Item,
+                RITM = returnForCreditEntry.RITM,
+                ReturnApproved = returnForCreditEntry.ReturnApproved,
+                ReturnRejected = returnForCreditEntry.ReturnRejected,
                 POResponsibleName = returnForCreditEntry.POResponsibleName,
                 PurchaseDocument = returnForCreditEntry.PurchaseDocument,
                 Quantity = returnForCreditEntry.Quantity,
@@ -97,11 +109,16 @@ namespace rpa_functions.rpa_pc239
                 AddressCity = returnGoodsTableEntity.AddressCity,
                 AddressPostCode = returnGoodsTableEntity.AddressPostCode,
                 AddressStreet = returnGoodsTableEntity.AddressStreet,
-                Comments = returnGoodsTableEntity.Comments,
+                CommentUser = returnGoodsTableEntity.CommentUser,
+                CommentDate = returnGoodsTableEntity.CommentDate,
+                CommentContent = returnGoodsTableEntity.CommentContent,
                 ConditionOfGoods = returnGoodsTableEntity.ConditionOfGoods,
                 ContactPerson = returnGoodsTableEntity.ContactPerson,
                 CreditAmount = returnGoodsTableEntity.CreditAmount,
                 Item = returnGoodsTableEntity.Item,
+                RITM = returnGoodsTableEntity.RITM,
+                ReturnApproved = returnGoodsTableEntity.ReturnApproved,
+                ReturnRejected = returnGoodsTableEntity.ReturnRejected,
                 POResponsibleName = returnGoodsTableEntity.POResponsibleName,
                 PurchaseDocument = returnGoodsTableEntity.PurchaseDocument,
                 Quantity = returnGoodsTableEntity.Quantity,
@@ -123,8 +140,9 @@ namespace rpa_functions.rpa_pc239
             returnEntity.Item = bodyData.Item;
             returnEntity.Text = bodyData.Text;
             returnEntity.Quantity = bodyData.Quantity;
+            returnEntity.RITM = bodyData.RITM;
             returnEntity.Total = bodyData.Total;
-            returnEntity.Status = ReturnForCreditEntityConstants.STATUS_WAITING_PO_RESPONSE;
+            returnEntity.Status = ReturnForCreditEntityConstants.STATUS_WAITING;
 
             return returnEntity;
         }
@@ -162,7 +180,9 @@ namespace rpa_functions.rpa_pc239
             returnForCredit.AddressStreet = bodyData.AddressStreet;
             returnForCredit.AddressPostCode = bodyData.AddressPostCode;
             returnForCredit.AddressCity = bodyData.AddressCity;
-            returnForCredit.Comments = bodyData.Comments;
+            returnForCredit.CommentUser = bodyData.CommentUuser;
+            returnForCredit.CommentDate = bodyData.CommentDate;
+            returnForCredit.CommentContent = bodyData.CommentContent;
             //define as done
             returnForCredit.Status = ReturnForCreditEntityConstants.STATUS_DONE;
             return returnForCredit;

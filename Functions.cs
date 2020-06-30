@@ -37,7 +37,7 @@ namespace rpa_functions
             var rfcInfo = await rfcOps.QueryReturnForCreditOnGuid(guid);
             return new OkObjectResult(JsonConvert.SerializeObject(rfcInfo)); // put something in here.
         }
-
+        //webguid added to function return
         [FunctionName("PC239_PostReturnForCredit")]
         public async Task<IActionResult> PostReturnForCredit(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC239_PostReturnForCredit")] HttpRequest req,
@@ -47,6 +47,16 @@ namespace rpa_functions
 
             dynamic bodyData = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
             var retVal = await rfcOps.InsertBatch(bodyData);
+            return new OkObjectResult("{ \"webID\": " + JsonConvert.SerializeObject(retVal) + "}");
+        }
+
+        [FunctionName("PC239_PutUpdateReturnForCreditGuid")]
+        public async Task<IActionResult> PutUpdateReturnForCreditGuid(
+            [HttpTrigger(AuthorizationLevel.Function, "put", Route = "PC239_PutUpdateReturnForCreditGuid/{guid}")] HttpRequest req,
+            ILogger log, string guid)
+        {
+            log.LogInformation("PC239_PutUpdateReturnForCreditGuid called");
+            var retVal = await rfcOps.UpdateGuidOnGuid(guid);
             return new OkObjectResult("{ \"webID\": " + JsonConvert.SerializeObject(retVal) + "}");
         }
 
@@ -272,50 +282,6 @@ namespace rpa_functions
     {
         private MaterialDeliveryTableOperations mdTableOps = new MaterialDeliveryTableOperations();
 
-        // Will be called by the Customer WWW Interface (EXPOSED TO INTERNET)
-        [FunctionName("PC243_GetMaterialDelivery")]
-        public HttpResponseMessage GetMaterialDelivery(
-           [HttpTrigger(AuthorizationLevel.Function, "get", Route = "PC243_MaterialDelivery/{webid}")] HttpRequest req,
-           ILogger log, string webid)
-        {
-            log.LogInformation("PC243 Get task trigged");
-
-            string materialDeliveryHTML = HtmlTemplate.GetPage(mdTableOps.QueryMaterialDeliveryOnWebid(webid, false).Result);
-
-            Console.Write(materialDeliveryHTML);
-            if (materialDeliveryHTML != null && materialDeliveryHTML.Length > 0)
-            {
-                var response = new HttpResponseMessage(HttpStatusCode.OK);
-                response.Content = new StringContent(materialDeliveryHTML);
-                response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
-                return response;
-            }
-            else
-            {
-                var response = new HttpResponseMessage(HttpStatusCode.NotFound);
-                return null;
-
-            }
-
-        }
-
-        // Will be called by the Customer WWW Interface (EXPOSED TO INTERNET)
-        [FunctionName("PC243_PostMaterialDeliveryUpdate")]
-        public async Task<IActionResult> PostMaterialDeliveryUpdate(
-            [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "PC243_PostMaterialDeliveryUpdate/{webid}/{guid}")] HttpRequest req,
-            string webid,
-            string guid,
-            ILogger log)
-        {
-            log.LogInformation("PC243 post material delivery  request received");
-
-            dynamic bodyData = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
-
-            Object retVal = await mdTableOps.UpdateMaterialDelivery(guid, bodyData);
-
-            return (ActionResult)new OkObjectResult(retVal);
-        }
-
         // Will be called by the robot (IP block and request key required)
         [FunctionName("PC243_PostMaterialDelivery")]
         public async Task<IActionResult> PostMaterialDelivery(
@@ -348,7 +314,6 @@ namespace rpa_functions
             Console.Write(materialDeliveryresp);
 
             return new OkObjectResult(materialDeliveryresp);
-
         }
 
 
@@ -365,20 +330,10 @@ namespace rpa_functions
             Console.Write(materialDeliveryresp);
 
             return new OkObjectResult(materialDeliveryresp);
-
         }
-
-
-
-
-
-
-
-
-        // Make a webservice to expire
-
-
     }
+
+
 
     public class PC0035_Webservice
     {
