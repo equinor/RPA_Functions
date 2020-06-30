@@ -68,7 +68,7 @@ namespace rpa_functions.rpa_pc239
                 {
                     TableResult tr = await table.InsertorReplace(Mappings.ToReturnForCreditEntityTableEntity(element), tableName).ConfigureAwait(false);
 
-                    returnCodes.Add(element.webguid);
+                    returnCodes.Add(element.id);
                 }
 
                 catch (Exception ex)
