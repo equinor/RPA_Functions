@@ -6,11 +6,9 @@ namespace rpa_functions.rpa_pc269
 {
     class PC269Mappings
     {
-
-
-        // -----
-        // Comment does not require mapping. Implement in API
-        // -----
+        /**
+         * DailyProductionTotal
+         */
         public static DailyReportsTotal ObjectToDailyReportsTotal(dynamic newDailyReport, int assetId)
         {
             DailyReportsTotal dailyReportTotal = new DailyReportsTotal();
@@ -65,7 +63,55 @@ namespace rpa_functions.rpa_pc269
             return dailyReportTotal;
         }
 
+        /**
+         * DailyProductionWells
+         */
+        public static List<DailyProductionWells> ObjectToDailyProductionWellsList(dynamic newDailyProductionWellsList, int dailyReportTotalId)
+        {
+            List < DailyProductionWells > dailyProdWellList = null;
 
+            foreach(dynamic newDailyProdWell in newDailyProductionWellsList)
+            {
+                DailyProductionWells dailyProdWell = ObjectToDailyProductionWell(newDailyProdWell, dailyReportTotalId);
+                dailyProdWellList.Add(dailyProdWell);
+            }
+
+            return dailyProdWellList;
+
+        }
+
+        private static DailyProductionWells ObjectToDailyProductionWell(dynamic newDailyProductionWell, int dailyReportTotalId)
+        {
+            DailyProductionWells dailyProdWell = new DailyProductionWells();
+
+            dailyProdWell.DailyreportId = dailyReportTotalId;
+            dailyProdWell.WellName = Convert.ToString(newDailyProductionWell.well_name);
+            dailyProdWell.WellTrunkline = Convert.ToString(newDailyProductionWell.well_trunkline);
+            dailyProdWell.OnlineTime = convertToInt(newDailyProductionWell.online_time);
+            dailyProdWell.ChokeOpening = convertToDecimal(newDailyProductionWell.choke_opening);
+            dailyProdWell.Whp = convertToInt(newDailyProductionWell.WHP);
+            dailyProdWell.Wht = convertToInt(newDailyProductionWell.WHT);
+            dailyProdWell.Bhp = convertToInt(newDailyProductionWell.BHP);
+            dailyProdWell.Bht = convertToInt(newDailyProductionWell.BHT);
+            dailyProdWell.OilProdAllocated = convertToDecimal(newDailyProductionWell.oil_prod_allocated);
+            dailyProdWell.OilProdTarget = convertToDecimal(newDailyProductionWell.oil_prod_target);
+            dailyProdWell.GasProdAllocated = convertToDecimal(newDailyProductionWell.gas_prod_allocated);
+            dailyProdWell.CondensateProdAllocated = convertToDecimal(newDailyProductionWell.codensate_prod_allocated);
+            dailyProdWell.LpgProdAllocated = convertToDecimal(newDailyProductionWell.LPG_prod_allocated);
+            dailyProdWell.WaterProductionAllocated = convertToInt(newDailyProductionWell.water_production_allocated);
+            dailyProdWell.Gor = convertToDecimal(newDailyProductionWell.GOR);
+            dailyProdWell.WaterCut = convertToDecimal(newDailyProductionWell.water_cut);
+            dailyProdWell.GasLift = convertToInt(newDailyProductionWell.gas_lift);
+            dailyProdWell.AnnulusPressure = convertToInt(newDailyProductionWell.annulus_pressure);
+            dailyProdWell.Zone = convertToInt(newDailyProductionWell.zone);
+
+            return dailyProdWell;
+
+        }
+
+        /**
+         * Internal methods for converting  
+         */ 
 
         private static int convertToInt(dynamic strInt)
         {

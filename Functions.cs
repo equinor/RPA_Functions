@@ -16,7 +16,6 @@ using System.Linq;
 // Only used by pc243
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -83,98 +82,112 @@ namespace rpa_functions
             _context = context;
         }
 
-        /**
-        [FunctionName("PC269_GetAssetByBatch")]
-        public IActionResult GetAssets(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "PC269_GetAssetByBatch/{batch}")] HttpRequest req,
-            ILogger log, string batch)
+       
+        [FunctionName("PC269_GetAssetById")]
+        public IActionResult GetAssetsById(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "PC269_GetAssetById/{assetId}")] HttpRequest req,
+            ILogger log, int assetId)
         {
-            log.LogInformation("PC269 GetAssets called");
+            log.LogInformation("PC269 GetAssetsById called");
+            Assets assetInfo = null;
 
-            var assetInfo = _context.Assets.FirstOrDefault(b => b.abbyy_batch == batch);
+            try 
+            {
+                assetInfo = _context.Assets.FirstOrDefault(b => b.AssetId == assetId);
+            } 
+            catch (Exception ex)
+            {
+                log.LogError(ex, "Something went wrong in GetAssetsById");
+                return new UnprocessableEntityObjectResult(new { error = "Error in input" });
+            }
 
-                                            
             return new OkObjectResult(JsonConvert.SerializeObject(assetInfo));
         }
 
-        [FunctionName("PC269_PostAsset")]
-        public async Task<IActionResult> PostAssetAsync(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostAsset")] HttpRequest req,
-            CancellationToken cts,
-            ILogger log)
-        {
-            log.LogInformation("PC269 post assets  request received");
+        /**
+       [FunctionName("PC269_PostAsset")]
+       public async Task<IActionResult> PostAssetAsync(
+           [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostAsset")] HttpRequest req,
+           CancellationToken cts,
+           ILogger log)
+       {
+           log.LogInformation("PC269 post assets  request received");
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            
-            Asset newAsset = JsonConvert.DeserializeObject<Asset>(requestBody);
+           string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+           
+           Asset newAsset = JsonConvert.DeserializeObject<Asset>(requestBody);
 
-            var entity = await _context.Assets.AddAsync(newAsset, cts);
+           var entity = await _context.Assets.AddAsync(newAsset, cts);
 
-            await _context.SaveChangesAsync(cts);
+           await _context.SaveChangesAsync(cts);
 
-            return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity));
-        }
+           return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity));
+       }
 
-    */
+   */
 
-        [FunctionName("PC269_PostDailyReport")]
+        [FunctionName("PC269_PostDailyReportTotal")]
         public async Task<IActionResult> PostDailyReportAsync(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostDailyReport/{asset_id}")] HttpRequest req,
-            int asset_id,
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostDailyReportTotal/{assetId}")] HttpRequest req,
+            int assetId,
             CancellationToken cts,
             ILogger log)
         {
             log.LogInformation("PC269 post daily report  request received");
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            Assets assetInfo = _context.Assets.FirstOrDefault(b => b.AssetId == assetId);
 
-            //DailyReport newDailyReport = JsonConvert.DeserializeObject<DailyReport>(requestBody);
+            if (assetInfo != null)
+            {
+                dynamic newDailyReport = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
+                newDailyReport.asset_Id = assetId;
 
-            dynamic newDailyReport = JsonConvert.DeserializeObject(requestBody);
+                DailyReportsTotal dailyReportTotal = PC269Mappings.ObjectToDailyReportsTotal(newDailyReport, assetId);
 
-            newDailyReport.asset_Id = asset_id;
+                var entity = await _context.DailyReportsTotal.AddAsync(dailyReportTotal, cts);
+                await _context.SaveChangesAsync(cts);
 
-            DailyReportsTotal dailyReportTotal = PC269Mappings.ObjectToDailyReportsTotal(newDailyReport, asset_id);
+                // returns the id of the daily report total
+                return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity.DailyreportId));
 
-            var entity = await _context.DailyReportsTotal.AddAsync(dailyReportTotal, cts);
+            } else
+            {
+                log.LogWarning("Trying to insert daily report with invalid asset id");
+                return new UnprocessableEntityObjectResult(new { error = "AssetId does not exist, report not inserted" });
+            }
 
-            await _context.SaveChangesAsync(cts);
 
-
-
-            return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity)); 
         }
 
-        /*
-        [FunctionName("PC269_PostWellsDetails")]
-        public async Task<IActionResult> PostWellsDetailAsync(
-         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostWellsDetails/{dailyreport_id}")] HttpRequest req,
-          int dailyreport_id,
+        
+        [FunctionName("PC269_PostDailyProductionWells")]
+        public async Task<IActionResult> PostDailyProductionWellsAsync(
+         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostDailyProductionWells/{dailyReportTotalId}")] HttpRequest req,
+          int dailyReportTotalId,
           CancellationToken cts,
           ILogger log)
         {
-            log.LogInformation("PC269 post wellstest  request received");
+            // Implement check for if dailyproductiontotal id exist in database
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            log.LogInformation("PC269 post dailty production weels request received");
 
-            dynamic newWellstest = JsonConvert.DeserializeObject(requestBody);
+            dynamic newDailyProductionWells = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
 
-            List<WellsDetails> WellDetailsList = PC269Mappings.ObjectToWellsDetailsList(newWellstest, dailyreport_id);
+            List<DailyProductionWells> DailyProductionWellsList = PC269Mappings.ObjectToDailyProductionWellsList(newDailyProductionWells, dailyReportTotalId);
 
-            foreach(WellsDetails wellDetailsElement in WellDetailsList)
+            foreach(DailyProductionWells dailyProductionWell in DailyProductionWellsList)
             {
           
-                await _context.WellsDetails.AddAsync(wellDetailsElement, cts);
+                await _context.DailyProductionWells.AddAsync(dailyProductionWell, cts);
                
                 await _context.SaveChangesAsync(cts);
             }
 
-
+            // Return more details...
             return new OkObjectResult("ok");
         }
 
-
+        /**
         [FunctionName("PC269_PostWaterInjectionWell")]
         public async Task<IActionResult> PostWaterInjectionWellAsync(
          [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostWaterInjectionWell/{dailyreport_id}")] HttpRequest req,
@@ -417,7 +430,7 @@ namespace rpa_functions
             log.LogInformation("PC185 received a webservice call");
 
             string name = req.Query["name"];
-
+            
             dynamic bodyData = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
             string method = req.Method;
 
