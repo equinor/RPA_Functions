@@ -109,9 +109,91 @@ namespace rpa_functions.rpa_pc269
 
         }
 
+
+        /**
+         * DailyProductionWells
+         */
+        public static List<DailyWiWells> ObjectToDailyWaterInjectionWellList(dynamic newDailyWaterInjectionWellsList, int dailyReportTotalId)
+        {
+            List<DailyWiWells> dailyWaterInjectionWellList = null;
+
+            foreach (dynamic newDailyWaterInjectionWell in newDailyWaterInjectionWellsList)
+            {
+                DailyWiWells dailyWaterInjectionWell = ObjectToDailyProductionWell(newDailyWaterInjectionWell, dailyReportTotalId);
+                dailyWaterInjectionWellList.Add(dailyWaterInjectionWell);
+            }
+
+            return dailyWaterInjectionWellList;
+
+        }
+
+        private static DailyWiWells ObjectToDailyWaterInjectionWell(dynamic newDailyWaterInjectionWell, int dailyReportTotalId)
+        {
+            DailyWiWells dailyWaterInjectionWell = new DailyWiWells();
+
+            dailyWaterInjectionWell.DailyreportId = dailyReportTotalId;
+            dailyWaterInjectionWell.WellName = Convert.ToString(newDailyWaterInjectionWell.well_name);
+            dailyWaterInjectionWell.OnlineTime = convertToInt(newDailyWaterInjectionWell.online_time);
+            dailyWaterInjectionWell.ChokeOpening = convertToDecimal(newDailyWaterInjectionWell.choke_opening);
+            dailyWaterInjectionWell.Whp = convertToInt(newDailyWaterInjectionWell.WHP);
+            dailyWaterInjectionWell.Wht = convertToInt(newDailyWaterInjectionWell.WHT);
+            dailyWaterInjectionWell.Bhp = convertToInt(newDailyWaterInjectionWell.BHP);
+            dailyWaterInjectionWell.BhpLimit = convertToInt(newDailyWaterInjectionWell.BHT_limit);
+            dailyWaterInjectionWell.Bht = convertToInt(newDailyWaterInjectionWell.BHT);
+            dailyWaterInjectionWell.WaterInjectionAllocated = convertToDecimal(newDailyWaterInjectionWell.water_injection_allocated);
+            dailyWaterInjectionWell.WaterInjectionTarget = convertToDecimal(newDailyWaterInjectionWell.water_injection_target);
+            dailyWaterInjectionWell.WaterInjectionMeasured = convertToDecimal(newDailyWaterInjectionWell.water_injection_measured);
+
+            return dailyWaterInjectionWell;
+
+        }
+
+        /**
+         * DailyGasInjectionWells
+         */
+        public static List<DailyGiWells> ObjectToDailyGasInjectionWellList(dynamic newDailyGasInjectionWellsList, int dailyReportTotalId)
+        {
+            List<DailyGiWells> dailyGasInjectionWellList = null;
+
+            foreach (dynamic newDailyGasInjectionWell in newDailyGasInjectionWellsList)
+            {
+                DailyGiWells dailyGasInjectionWell = ObjectToDailyProductionWell(newDailyGasInjectionWell, dailyReportTotalId);
+                dailyGasInjectionWellList.Add(dailyGasInjectionWell);
+            }
+
+            return dailyGasInjectionWellList;
+
+        }
+
+        private static DailyGiWells ObjectToDailyGasInjectionWell(dynamic newDailyGasInjectionWell, int dailyReportTotalId)
+        {
+            DailyGiWells dailyGasInjectionWell = new DailyGiWells();
+
+            dailyGasInjectionWell.DailyreportId = dailyReportTotalId;
+            dailyGasInjectionWell.WellName = Convert.ToString(newDailyGasInjectionWell.well_name);
+            dailyGasInjectionWell.OnlineTime = convertToInt(newDailyGasInjectionWell.online_time);
+            dailyGasInjectionWell.ChokeOpening = convertToDecimal(newDailyGasInjectionWell.choke_opening);
+            dailyGasInjectionWell.Whp = convertToInt(newDailyGasInjectionWell.WHP);
+            dailyGasInjectionWell.Wht = convertToInt(newDailyGasInjectionWell.WHT);
+            dailyGasInjectionWell.Bhp = convertToInt(newDailyGasInjectionWell.BHP);
+            dailyGasInjectionWell.Bht = convertToInt(newDailyGasInjectionWell.BHT);
+            dailyGasInjectionWell.GasInjectionAllocated = convertToDecimal(newDailyGasInjectionWell.gas_injection_allocated);
+            dailyGasInjectionWell.GasInjectionTarget = convertToDecimal(newDailyGasInjectionWell.gas_injection_target);
+            dailyGasInjectionWell.GasInjectionMeasured = convertToDecimal(newDailyGasInjectionWell.gas_injection_measured);
+
+            return dailyGasInjectionWell;
+
+        }
+
+
+        /**
+        * WellTest
+        */
+
+
         /**
          * Internal methods for converting  
-         */ 
+         */
 
         private static int convertToInt(dynamic strInt)
         {

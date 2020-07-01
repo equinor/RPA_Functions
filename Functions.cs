@@ -124,6 +124,8 @@ namespace rpa_functions
            return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity));
        }
 
+            POST units
+
    */
 
         [FunctionName("PC269_PostDailyReportTotal")]
@@ -167,9 +169,9 @@ namespace rpa_functions
           CancellationToken cts,
           ILogger log)
         {
-            // Implement check for if dailyproductiontotal id exist in database
+            log.LogInformation("PC269 post daily production wells request received");
 
-            log.LogInformation("PC269 post dailty production weels request received");
+            DailyReportsTotal dailyReportTotal = _context.DailyReportsTotal.FirstOrDefault(b => b.DailyreportId == dailyReportTotalId);
 
             dynamic newDailyProductionWells = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
 
@@ -187,26 +189,25 @@ namespace rpa_functions
             return new OkObjectResult("ok");
         }
 
-        /**
-        [FunctionName("PC269_PostWaterInjectionWell")]
-        public async Task<IActionResult> PostWaterInjectionWellAsync(
-         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostWaterInjectionWell/{dailyreport_id}")] HttpRequest req,
-          int dailyreport_id,
+        [FunctionName("PC269_PostDailyWaterInjectionWells")]
+        public async Task<IActionResult> PostDailyWaterInjectionWellsAsync(
+         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostDailyWaterInjectionWells/{dailyReportTotalId}")] HttpRequest req,
+          int dailyReportTotalId,
           CancellationToken cts,
           ILogger log)
         {
             log.LogInformation("PC269 post waterinjection  request received");
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            DailyReportsTotal dailyReportTotal = _context.DailyReportsTotal.FirstOrDefault(b => b.DailyreportId == dailyReportTotalId);
 
-            dynamic newWaterInjectionWell = JsonConvert.DeserializeObject(requestBody);
+            dynamic newDailyWaterInjectionWells = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
 
-            List<WaterInjectionWell> WaterInjectionWellList = PC269Mappings.ObjectToWaterInjectionWellList(newWaterInjectionWell, dailyreport_id);
+            List<DailyWiWells> DailyWaterInjectionWellList = PC269Mappings.ObjectToDailyWaterInjectionWellList(newDailyWaterInjectionWells, dailyReportTotalId);
 
-            foreach (WaterInjectionWell waterInjectionWell in WaterInjectionWellList)
+            foreach (DailyWiWells dailyWaterInjectionWell in DailyWaterInjectionWellList)
             {
 
-                await _context.WaterInjectionWells.AddAsync(waterInjectionWell, cts);
+                await _context.DailyWiWells.AddAsync(dailyWaterInjectionWell, cts);
 
                 await _context.SaveChangesAsync(cts);
             }
@@ -215,60 +216,62 @@ namespace rpa_functions
             return new OkObjectResult("ok");
         }
 
+    
+      [FunctionName("PC269_PostDailyGasInjectionWell")]
+      public async Task<IActionResult> PostDailyGasInjectionWellAsync(
+     [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostDailyGasInjectionWell/{dailyReportTotalId}")] HttpRequest req,
+      int dailyReportTotalId,
+      CancellationToken cts,
+      ILogger log)
+      {
+          log.LogInformation("PC269 post gasinjection  request received");
 
-        [FunctionName("PC269_PostGasInjectionWell")]
-        public async Task<IActionResult> PostGasInjectionWellAsync(
-       [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostGasInjectionWell/{dailyreport_id}")] HttpRequest req,
-        int dailyreport_id,
-        CancellationToken cts,
-        ILogger log)
-        {
-            log.LogInformation("PC269 post gasinjection  request received");
+          DailyReportsTotal dailyReportTotal = _context.DailyReportsTotal.FirstOrDefault(b => b.DailyreportId == dailyReportTotalId);
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+          dynamic newDailyGasInjectionWells = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
 
-            dynamic newGasInjectionWell = JsonConvert.DeserializeObject(requestBody);
+          List<DailyGiWells> GasInjectionWellList = PC269Mappings.ObjectToDailyGasInjectionWellList(newDailyGasInjectionWells, dailyReportTotalId);
 
-            List<GasInjectionWell> GasInjectionWellList = PC269Mappings.ObjectToGasInjectionWellList(newGasInjectionWell, dailyreport_id);
+          foreach (DailyGiWells dailyGasInjectionWell in GasInjectionWellList)
+          {
 
-            foreach (GasInjectionWell gasInjectionWell in GasInjectionWellList)
-            {
+              await _context.DailyGiWells.AddAsync(dailyGasInjectionWell, cts);
 
-                await _context.GasInjectionWells.AddAsync(gasInjectionWell, cts);
-
-                await _context.SaveChangesAsync(cts);
-            }
+              await _context.SaveChangesAsync(cts);
+          }
 
 
-            return new OkObjectResult("ok");
-        }
+          return new OkObjectResult("ok");
+      }
 
-        [FunctionName("PC269_PostComments")]
-        public async Task<IActionResult> PostCommentsAsync(
-        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostComments/{dailyreport_id}")] HttpRequest req,
-        int dailyreport_id,
-        CancellationToken cts,
-        ILogger log)
-        {
-            log.LogInformation("PC269 post comments  request received");
+        // Welltest
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+      [FunctionName("PC269_PostComments")]
+      public async Task<IActionResult> PostCommentsAsync(
+      [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostComments/{dailyReportTotalId}")] HttpRequest req,
+      int dailyReportTotalId,
+      CancellationToken cts,
+      ILogger log)
+      {
+          log.LogInformation("PC269 post comments  request received");
 
-            List<Comment> newComments = JsonConvert.DeserializeObject<List<Comment>>(requestBody);
+            DailyReportsTotal dailyReportTotal = _context.DailyReportsTotal.FirstOrDefault(b => b.DailyreportId == dailyReportTotalId);
 
-            foreach(Comment commentElement in newComments)
-            {
-                commentElement.dailyreport_Id = dailyreport_id;
+            List<Comments> newComments = JsonConvert.DeserializeObject<List<Comments>>(await new StreamReader(req.Body).ReadToEndAsync());
 
-                await _context.Comments.AddAsync(commentElement, cts);
+          foreach(Comments commentElement in newComments)
+          {
+              commentElement.DailyreportId = dailyReportTotalId;
 
-                await _context.SaveChangesAsync(cts);
-            }
-            
+              await _context.Comments.AddAsync(commentElement, cts);
 
-            return new OkObjectResult("ok");
-        }
-        */
+              await _context.SaveChangesAsync(cts);
+          }
+          
+
+          return new OkObjectResult("ok");
+      }
+      
 
         [FunctionName("PC269_UploadFile")]
         public async Task<IActionResult> UploadFileToBlob(
