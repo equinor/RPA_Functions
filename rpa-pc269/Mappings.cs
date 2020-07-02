@@ -185,11 +185,49 @@ namespace rpa_functions.rpa_pc269
 
         }
 
-
         /**
         * WellTest
         */
+        
+        public static List<WellTests> ObjectToWellTestList(dynamic newWellTests, int dailyReportTotalId)
+        {
+            List<WellTests> wellTestList = null;
 
+            foreach (dynamic newWellTest in newWellTests)
+            {
+                WellTests wellTest = ObjectToWellTest(newWellTest, dailyReportTotalId);
+                wellTestList.Add(wellTest);
+            }
+
+            return wellTestList;
+
+        }
+
+        private static WellTests ObjectToWellTest(dynamic newWellTest, int dailyReportTotalId)
+        {
+            WellTests wellTest = new WellTests();
+
+            wellTest.DailyreportId = dailyReportTotalId;
+            wellTest.WellName = Convert.ToString(newWellTest.well_name);
+            wellTest.TestDate = convertToDate(newWellTest.test_date);
+            wellTest.OnlineTime = convertToInt(newWellTest.online_time);
+            wellTest.ChokeOpening = convertToDecimal(newWellTest.choke_opening);
+            wellTest.OilProdRate = convertToDecimal(newWellTest.oil_prod_rate);
+            wellTest.GasProdRate = convertToDecimal(newWellTest.gas_prod_rate);
+            wellTest.WaterProdRate = convertToDecimal(newWellTest.water_prod_rate);
+            wellTest.Whp = convertToInt(newWellTest.WHP);
+            wellTest.Wht = convertToInt(newWellTest.WHT);
+            wellTest.Bhp = convertToInt(newWellTest.BHP);
+            wellTest.Bht = convertToInt(newWellTest.BHT);
+            wellTest.SeparatorPressure = convertToDecimal(newWellTest.separator_pressure);
+            wellTest.Bsw = convertToDecimal(newWellTest.BSW);
+            wellTest.Gor = convertToDecimal(newWellTest.GOR);
+            wellTest.SandProd = convertToDecimal(newWellTest.gas_injection_measured);
+            wellTest.Glr = convertToDecimal(newWellTest.GLR);
+
+            return wellTest;
+
+        }
 
         /**
          * Internal methods for converting  

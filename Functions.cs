@@ -245,8 +245,35 @@ namespace rpa_functions
       }
 
         // Welltest
+        [FunctionName("PC269_PostWellTest")]
+        public async Task<IActionResult> PostWellTestAsync(
+[HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostWellTest/{dailyReportTotalId}")] HttpRequest req,
+int dailyReportTotalId,
+CancellationToken cts,
+ILogger log)
+        {
+            log.LogInformation("PC269 post well test  request received");
 
-      [FunctionName("PC269_PostComments")]
+            DailyReportsTotal dailyReportTotal = _context.DailyReportsTotal.FirstOrDefault(b => b.DailyreportId == dailyReportTotalId);
+
+            dynamic newWellTest = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
+
+            List<WellTests> WellTestList = PC269Mappings.ObjectToWellTestList(newWellTest, dailyReportTotalId);
+
+            foreach (WellTests wellTest in WellTestList)
+            {
+
+                await _context.WellTests.AddAsync(wellTest, cts);
+
+                await _context.SaveChangesAsync(cts);
+            }
+
+
+            return new OkObjectResult("ok");
+        }
+
+
+        [FunctionName("PC269_PostComments")]
       public async Task<IActionResult> PostCommentsAsync(
       [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostComments/{dailyReportTotalId}")] HttpRequest req,
       int dailyReportTotalId,
@@ -281,6 +308,8 @@ namespace rpa_functions
             log.LogInformation("PC269 Upload File called");
             CommonBlob blobOps = new CommonBlob();
             Stream data = await req.Content.ReadAsStreamAsync();
+
+           
 
             DateTime _date = DateTime.Now;
             var _dateString = _date.ToString("dd-MM-yyyy");
