@@ -14,6 +14,7 @@ namespace rpa_functions.rpa_pc269
             DailyReportsTotal dailyReportTotal = new DailyReportsTotal();
 
             dailyReportTotal.AssetId = assetId;
+            dailyReportTotal.Date = Convert.ToDateTime(newDailyReport.date);
             dailyReportTotal.FacilityName = Convert.ToString(newDailyReport.facility_name);
             dailyReportTotal.OilProdAllocated = convertToDecimal(newDailyReport.oil_prod_allocated);
             dailyReportTotal.OilProdTarget = convertToDecimal(newDailyReport.oil_prod_target);
