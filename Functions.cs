@@ -8,6 +8,7 @@ using rpa_functions.rpa_pc243;
 using rpa_functions.rpa_pc269;
 using rpa_functions.rpa_pc35;
 using rpa_functions.rpa_pc239;
+using rpa_functions.rpa_pc315;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,11 +19,31 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.WindowsAzure.Storage.Table;
 
 namespace rpa_functions
 {
+    public class PC315WebService
+    {
+        private LoadCarrierTableOps lcTableOps = new LoadCarrierTableOps();
 
-    public class PC239WebService
+        [FunctionName("PC315_LogLoadCarrier")]
+        public async Task<IActionResult> LogLoadCarrier(
+    [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC315_LogLoadCarrier")] HttpRequest req,
+    ILogger log)
+        {
+            log.LogInformation("PC315 Log LoadCarrier called");
+
+            dynamic bodyData = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
+
+            LoadCarrierEntity lcEntity = rpa_pc315.Mappings.dynamicToloadCarrierEntity(bodyData);
+
+            TableResult tr = await lcTableOps.insertItem(lcEntity);
+
+            return new OkObjectResult(tr.Result); // put something in here.
+        }
+    }
+        public class PC239WebService
     {
         private ReturnForCreditTableOperations rfcOps = new ReturnForCreditTableOperations();
 
