@@ -78,15 +78,48 @@ namespace rpa_functions.rpa_pc315
             return new LoadCarrierEntity()
             {
                 ContainerId = bodyData.ContainerId,
-                LCyear = bodyData.LCyear,
-                LCmonth = bodyData.LCmonth,
+                LCyear = convertToInt(bodyData.LCyear),
+                LCmonth = convertToInt(bodyData.LCmonth),
                 Location = bodyData.Location,
                 Plant = bodyData.Plant,
-                LoadInDays = bodyData.LoadInDays,
+                LoadInDays = convertToInt(bodyData.LoadInDays),
                 WBS = bodyData.WBS
             };
         }
 
 
+        private static int convertToInt(dynamic strInt)
+        {
+            int outputInt;
+
+            if (Int32.TryParse(Convert.ToString(strInt), out outputInt)) return outputInt;
+
+            return 0; // default return value if missing or invalid type
+        }
+
+        private static decimal convertToDecimal(dynamic strDecimal)
+        {
+            Decimal outputDecimal;
+
+            if (Decimal.TryParse(Convert.ToString(strDecimal), out outputDecimal)) return outputDecimal;
+
+            return 0; // default return value if missing or invalid type
+
+        }
+
+        private static DateTime? convertToDate(dynamic strDate)
+        {
+
+            DateTime outputDate;
+
+            if (DateTime.TryParse(Convert.ToString(strDate), out outputDate)) return outputDate;
+
+            return null; // default return value if missing or invalid type
+
+
+        }
+
     }
+
+
 }
