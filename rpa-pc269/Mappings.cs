@@ -121,7 +121,7 @@ namespace rpa_functions.rpa_pc269
 
             foreach (dynamic newDailyWaterInjectionWell in newDailyWaterInjectionWellsList)
             {
-                DailyWiWells dailyWaterInjectionWell = ObjectToDailyProductionWell(newDailyWaterInjectionWell, dailyReportTotalId);
+                DailyWiWells dailyWaterInjectionWell = ObjectToDailyWaterInjectionWell(newDailyWaterInjectionWell, dailyReportTotalId);
                 dailyWaterInjectionWellList.Add(dailyWaterInjectionWell);
             }
 
@@ -159,7 +159,7 @@ namespace rpa_functions.rpa_pc269
 
             foreach (dynamic newDailyGasInjectionWell in newDailyGasInjectionWellsList)
             {
-                DailyGiWells dailyGasInjectionWell = ObjectToDailyProductionWell(newDailyGasInjectionWell, dailyReportTotalId);
+                DailyGiWells dailyGasInjectionWell = ObjectToDailyGasInjectionWell(newDailyGasInjectionWell, dailyReportTotalId);
                 dailyGasInjectionWellList.Add(dailyGasInjectionWell);
             }
 
@@ -289,11 +289,16 @@ namespace rpa_functions.rpa_pc269
             return 0; // default return value if missing or invalid type
         }
 
-        private static decimal convertToDecimal(dynamic strDecimal)
+        private static decimal convertToDecimal(dynamic dynDecimal)
         {
             Decimal outputDecimal;
 
-            if (Decimal.TryParse(Convert.ToString(strDecimal), out outputDecimal)) return outputDecimal;
+            string strDecimal = Convert.ToString(dynDecimal);
+            // Correct comma separator.. the dirty way
+
+            if (strDecimal != null) strDecimal = Regex.Replace(strDecimal, @",", ".");
+
+            if (Decimal.TryParse(strDecimal, out outputDecimal)) return outputDecimal;
 
             return 0; // default return value if missing or invalid type
 
