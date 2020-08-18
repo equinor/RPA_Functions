@@ -104,17 +104,17 @@ namespace rpa_functions
         }
 
        
-        [FunctionName("PC269_GetAssetById")]
-        public IActionResult GetAssetsById(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "PC269_GetAssetById/{assetId}")] HttpRequest req,
-            ILogger log, int assetId)
+        [FunctionName("PC269_GetAssetId")]
+        public IActionResult GetAssetsByName(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "PC269_GetAssetId/{assetName}")] HttpRequest req,
+            ILogger log, string assetName)
         {
-            log.LogInformation("PC269 GetAssetsById called");
+            log.LogInformation("PC269 GetAssetId called");
             Assets assetInfo = null;
 
             try 
             {
-                assetInfo = _context.Assets.FirstOrDefault(b => b.AssetId == assetId);
+                assetInfo = _context.Assets.FirstOrDefault(b => b.AssetName == assetName);
             } 
             catch (Exception ex)
             {
@@ -305,12 +305,16 @@ ILogger log)
 
             DailyReportsTotal dailyReportTotal = _context.DailyReportsTotal.FirstOrDefault(b => b.DailyreportId == dailyReportTotalId);
 
-            List<Comments> newComments = JsonConvert.DeserializeObject<List<Comments>>(await new StreamReader(req.Body).ReadToEndAsync());
+            // Fix handling of field name main_events ...
 
-          foreach(Comments commentElement in newComments)
+            //List<Comments> newComments = JsonConvert.DeserializeObject<List<Comments>>(await new StreamReader(req.Body).ReadToEndAsync());
+
+            dynamic newComments = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
+
+            List<Comments> newCommentsList = PC269Mappings.ObjectToCommentsList(newComments, dailyReportTotalId);
+
+            foreach (Comments commentElement in newCommentsList)
           {
-              commentElement.DailyreportId = dailyReportTotalId;
-
               await _context.Comments.AddAsync(commentElement, cts);
 
               await _context.SaveChangesAsync(cts);

@@ -88,12 +88,12 @@ namespace rpa_functions.rpa_pc269
             dailyProdWell.DailyreportId = dailyReportTotalId;
             dailyProdWell.WellName = Convert.ToString(newDailyProductionWell.well_name);
             dailyProdWell.WellTrunkline = Convert.ToString(newDailyProductionWell.well_trunkline);
-            dailyProdWell.OnlineTime = convertToInt(newDailyProductionWell.online_time);
+            dailyProdWell.OnlineTime = convertToShort(newDailyProductionWell.online_time);
             dailyProdWell.ChokeOpening = convertToDecimal(newDailyProductionWell.choke_opening);
-            dailyProdWell.Whp = convertToInt(newDailyProductionWell.WHP);
-            dailyProdWell.Wht = convertToInt(newDailyProductionWell.WHT);
-            dailyProdWell.Bhp = convertToInt(newDailyProductionWell.BHP);
-            dailyProdWell.Bht = convertToInt(newDailyProductionWell.BHT);
+            dailyProdWell.Whp = convertToShort(newDailyProductionWell.WHP);
+            dailyProdWell.Wht = convertToShort(newDailyProductionWell.WHT);
+            dailyProdWell.Bhp = convertToShort(newDailyProductionWell.BHP);
+            dailyProdWell.Bht = convertToShort(newDailyProductionWell.BHT);
             dailyProdWell.OilProdAllocated = convertToDecimal(newDailyProductionWell.oil_prod_allocated);
             dailyProdWell.OilProdTarget = convertToDecimal(newDailyProductionWell.oil_prod_target);
             dailyProdWell.GasProdAllocated = convertToDecimal(newDailyProductionWell.gas_prod_allocated);
@@ -102,9 +102,9 @@ namespace rpa_functions.rpa_pc269
             dailyProdWell.WaterProductionAllocated = convertToInt(newDailyProductionWell.water_production_allocated);
             dailyProdWell.Gor = convertToDecimal(newDailyProductionWell.GOR);
             dailyProdWell.WaterCut = convertToDecimal(newDailyProductionWell.water_cut);
-            dailyProdWell.GasLift = convertToInt(newDailyProductionWell.gas_lift);
-            dailyProdWell.AnnulusPressure = convertToInt(newDailyProductionWell.annulus_pressure);
-            dailyProdWell.Zone = convertToInt(newDailyProductionWell.zone);
+            dailyProdWell.GasLift = convertToShort(newDailyProductionWell.gas_lift);
+            dailyProdWell.AnnulusPressure = convertToShort(newDailyProductionWell.annulus_pressure);
+            dailyProdWell.Zone = convertToShort(newDailyProductionWell.zone);
 
             return dailyProdWell;
 
@@ -134,13 +134,13 @@ namespace rpa_functions.rpa_pc269
 
             dailyWaterInjectionWell.DailyreportId = dailyReportTotalId;
             dailyWaterInjectionWell.WellName = Convert.ToString(newDailyWaterInjectionWell.well_name);
-            dailyWaterInjectionWell.OnlineTime = convertToInt(newDailyWaterInjectionWell.online_time);
+            dailyWaterInjectionWell.OnlineTime = convertToShort(newDailyWaterInjectionWell.online_time);
             dailyWaterInjectionWell.ChokeOpening = convertToDecimal(newDailyWaterInjectionWell.choke_opening);
-            dailyWaterInjectionWell.Whp = convertToInt(newDailyWaterInjectionWell.WHP);
-            dailyWaterInjectionWell.Wht = convertToInt(newDailyWaterInjectionWell.WHT);
-            dailyWaterInjectionWell.Bhp = convertToInt(newDailyWaterInjectionWell.BHP);
-            dailyWaterInjectionWell.BhpLimit = convertToInt(newDailyWaterInjectionWell.BHT_limit);
-            dailyWaterInjectionWell.Bht = convertToInt(newDailyWaterInjectionWell.BHT);
+            dailyWaterInjectionWell.Whp = convertToShort(newDailyWaterInjectionWell.WHP);
+            dailyWaterInjectionWell.Wht = convertToShort(newDailyWaterInjectionWell.WHT);
+            dailyWaterInjectionWell.Bhp = convertToShort(newDailyWaterInjectionWell.BHP);
+            dailyWaterInjectionWell.BhpLimit = convertToShort(newDailyWaterInjectionWell.BHT_limit);
+            dailyWaterInjectionWell.Bht = convertToShort(newDailyWaterInjectionWell.BHT);
             dailyWaterInjectionWell.WaterInjectionAllocated = convertToDecimal(newDailyWaterInjectionWell.water_injection_allocated);
             dailyWaterInjectionWell.WaterInjectionTarget = convertToDecimal(newDailyWaterInjectionWell.water_injection_target);
             dailyWaterInjectionWell.WaterInjectionMeasured = convertToDecimal(newDailyWaterInjectionWell.water_injection_measured);
@@ -172,12 +172,12 @@ namespace rpa_functions.rpa_pc269
 
             dailyGasInjectionWell.DailyreportId = dailyReportTotalId;
             dailyGasInjectionWell.WellName = Convert.ToString(newDailyGasInjectionWell.well_name);
-            dailyGasInjectionWell.OnlineTime = convertToInt(newDailyGasInjectionWell.online_time);
+            dailyGasInjectionWell.OnlineTime = convertToShort(newDailyGasInjectionWell.online_time);
             dailyGasInjectionWell.ChokeOpening = convertToDecimal(newDailyGasInjectionWell.choke_opening);
-            dailyGasInjectionWell.Whp = convertToInt(newDailyGasInjectionWell.WHP);
-            dailyGasInjectionWell.Wht = convertToInt(newDailyGasInjectionWell.WHT);
-            dailyGasInjectionWell.Bhp = convertToInt(newDailyGasInjectionWell.BHP);
-            dailyGasInjectionWell.Bht = convertToInt(newDailyGasInjectionWell.BHT);
+            dailyGasInjectionWell.Whp = convertToShort(newDailyGasInjectionWell.WHP);
+            dailyGasInjectionWell.Wht = convertToShort(newDailyGasInjectionWell.WHT);
+            dailyGasInjectionWell.Bhp = convertToShort(newDailyGasInjectionWell.BHP);
+            dailyGasInjectionWell.Bht = convertToShort(newDailyGasInjectionWell.BHT);
             dailyGasInjectionWell.GasInjectionAllocated = convertToDecimal(newDailyGasInjectionWell.gas_injection_allocated);
             dailyGasInjectionWell.GasInjectionTarget = convertToDecimal(newDailyGasInjectionWell.gas_injection_target);
             dailyGasInjectionWell.GasInjectionMeasured = convertToDecimal(newDailyGasInjectionWell.gas_injection_measured);
@@ -187,10 +187,39 @@ namespace rpa_functions.rpa_pc269
         }
 
         /**
-        * WellTest
-        */
-        
-        public static List<WellTests> ObjectToWellTestList(dynamic newWellTests, int dailyReportTotalId)
+         * Comments 
+         */
+        public static List<Comments> ObjectToCommentsList(dynamic newComments, int dailyReportTotalId)
+        {
+            List<Comments> CommentsList = null;
+
+            foreach (dynamic newComment in newComments)
+            {
+                Comments comment = ObjectToComment(newComment, dailyReportTotalId);
+                CommentsList.Add(comment);
+            }
+
+            return CommentsList;
+
+        }
+
+        private static Comments ObjectToComment(dynamic newComment, int dailyReportTotalId)
+        {
+            Comments comment = new Comments();
+
+            comment.DailyreportId = dailyReportTotalId;
+            comment.MainEvents = Convert.ToString(newComment.main_events);
+
+            return comment;
+        }
+
+
+
+            /**
+            * WellTest
+            */
+
+            public static List<WellTests> ObjectToWellTestList(dynamic newWellTests, int dailyReportTotalId)
         {
             List<WellTests> wellTestList = null;
 
@@ -211,15 +240,15 @@ namespace rpa_functions.rpa_pc269
             wellTest.DailyreportId = dailyReportTotalId;
             wellTest.WellName = Convert.ToString(newWellTest.well_name);
             wellTest.TestDate = convertToDate(newWellTest.test_date);
-            wellTest.OnlineTime = convertToInt(newWellTest.online_time);
+            wellTest.OnlineTime = convertToShort(newWellTest.online_time);
             wellTest.ChokeOpening = convertToDecimal(newWellTest.choke_opening);
             wellTest.OilProdRate = convertToDecimal(newWellTest.oil_prod_rate);
             wellTest.GasProdRate = convertToDecimal(newWellTest.gas_prod_rate);
             wellTest.WaterProdRate = convertToDecimal(newWellTest.water_prod_rate);
-            wellTest.Whp = convertToInt(newWellTest.WHP);
-            wellTest.Wht = convertToInt(newWellTest.WHT);
-            wellTest.Bhp = convertToInt(newWellTest.BHP);
-            wellTest.Bht = convertToInt(newWellTest.BHT);
+            wellTest.Whp = convertToShort(newWellTest.WHP);
+            wellTest.Wht = convertToShort(newWellTest.WHT);
+            wellTest.Bhp = convertToShort(newWellTest.BHP);
+            wellTest.Bht = convertToShort(newWellTest.BHT);
             wellTest.SeparatorPressure = convertToDecimal(newWellTest.separator_pressure);
             wellTest.Bsw = convertToDecimal(newWellTest.BSW);
             wellTest.Gor = convertToDecimal(newWellTest.GOR);
@@ -238,7 +267,17 @@ namespace rpa_functions.rpa_pc269
         {
             int outputInt;
 
+
             if (Int32.TryParse(Convert.ToString(strInt), out outputInt)) return outputInt;
+
+            return 0; // default return value if missing or invalid type
+        }
+
+        private static short convertToShort(dynamic strInt)
+        {
+            short outputShort;
+
+            if (Int16.TryParse(Convert.ToString(strInt), out outputShort)) return outputShort;
 
             return 0; // default return value if missing or invalid type
         }

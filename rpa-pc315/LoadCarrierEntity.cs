@@ -30,10 +30,10 @@ namespace rpa_functions.rpa_pc315
         public int LCyear { get; set; }
         public int LCmonth { get; set; }
         public DateTime LoggedTime { get; set; }
-        //public Guid UId { get; set; } 
+        public string UId { get; set; } 
         public string Location { get; set; }
         public int Plant { get; set; }
-        //public string ContainerId { get; set; }
+        public string ContainerId { get; set; }
         public int LoadInDays { get; set; }
         public string WBS { get; set; }
     }
