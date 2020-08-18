@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace rpa_functions.rpa_pc269
 {
@@ -69,7 +70,7 @@ namespace rpa_functions.rpa_pc269
          */
         public static List<DailyProductionWells> ObjectToDailyProductionWellsList(dynamic newDailyProductionWellsList, int dailyReportTotalId)
         {
-            List < DailyProductionWells > dailyProdWellList = null;
+            List<DailyProductionWells> dailyProdWellList = new List<DailyProductionWells>();
 
             foreach(dynamic newDailyProdWell in newDailyProductionWellsList)
             {
@@ -116,7 +117,7 @@ namespace rpa_functions.rpa_pc269
          */
         public static List<DailyWiWells> ObjectToDailyWaterInjectionWellList(dynamic newDailyWaterInjectionWellsList, int dailyReportTotalId)
         {
-            List<DailyWiWells> dailyWaterInjectionWellList = null;
+            List<DailyWiWells> dailyWaterInjectionWellList = new List<DailyWiWells>();
 
             foreach (dynamic newDailyWaterInjectionWell in newDailyWaterInjectionWellsList)
             {
@@ -154,7 +155,7 @@ namespace rpa_functions.rpa_pc269
          */
         public static List<DailyGiWells> ObjectToDailyGasInjectionWellList(dynamic newDailyGasInjectionWellsList, int dailyReportTotalId)
         {
-            List<DailyGiWells> dailyGasInjectionWellList = null;
+            List<DailyGiWells> dailyGasInjectionWellList = new List<DailyGiWells>();
 
             foreach (dynamic newDailyGasInjectionWell in newDailyGasInjectionWellsList)
             {
@@ -191,15 +192,15 @@ namespace rpa_functions.rpa_pc269
          */
         public static List<Comments> ObjectToCommentsList(dynamic newComments, int dailyReportTotalId)
         {
-            List<Comments> CommentsList = null;
+            List<Comments> commentsList = new List<Comments>();
 
             foreach (dynamic newComment in newComments)
             {
                 Comments comment = ObjectToComment(newComment, dailyReportTotalId);
-                CommentsList.Add(comment);
+                commentsList.Add(comment);
             }
 
-            return CommentsList;
+            return commentsList;
 
         }
 
@@ -207,8 +208,14 @@ namespace rpa_functions.rpa_pc269
         {
             Comments comment = new Comments();
 
+            
+            // Trim and remove extra spaces
+            string mainEventsTrimmed = Convert.ToString(newComment.main_events);
+            mainEventsTrimmed = mainEventsTrimmed.TrimStart().TrimEnd();
+            mainEventsTrimmed = Regex.Replace(mainEventsTrimmed, @"\s+", " ");
+
+            comment.MainEvents = mainEventsTrimmed;
             comment.DailyreportId = dailyReportTotalId;
-            comment.MainEvents = Convert.ToString(newComment.main_events);
 
             return comment;
         }
@@ -221,7 +228,7 @@ namespace rpa_functions.rpa_pc269
 
             public static List<WellTests> ObjectToWellTestList(dynamic newWellTests, int dailyReportTotalId)
         {
-            List<WellTests> wellTestList = null;
+            List<WellTests> wellTestList = new List<WellTests>();
 
             foreach (dynamic newWellTest in newWellTests)
             {
