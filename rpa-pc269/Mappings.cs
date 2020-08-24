@@ -10,6 +10,26 @@ namespace rpa_functions.rpa_pc269
         /**
          * DailyProductionTotal
          */
+
+        public static List<DailyReportsTotal> ObjectToDailyProductionTotalList(dynamic newDailyReports, int assetId)
+        {
+            List<DailyReportsTotal> dailyProdTotalList = new List<DailyReportsTotal>();
+
+            foreach (dynamic newDailyProdReport in newDailyReports)
+            {
+                DailyReportsTotal dailyProdReport = ObjectToDailyReportsTotal(newDailyProdReport, assetId);
+                dailyProdTotalList.Add(dailyProdReport);
+            }
+
+            return dailyProdTotalList;
+
+            // Add field to database
+
+            // Add parent_report to database and to field/facility
+
+        }
+
+
         public static DailyReportsTotal ObjectToDailyReportsTotal(dynamic newDailyReport, int assetId)
         {
             DailyReportsTotal dailyReportTotal = new DailyReportsTotal();

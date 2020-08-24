@@ -73,18 +73,31 @@ namespace rpa_functions.rpa_pc315
             };
         }
 
-        public static LoadCarrierEntity dynamicToloadCarrierEntity(dynamic bodyData)
+
+        public static List<LoadCarrierEntity> dynamicToloadCarrierEntity(dynamic bodyData)
         {
-            return new LoadCarrierEntity()
+
+            List<LoadCarrierEntity> loadCarriers = new List<LoadCarrierEntity>();
+
+            foreach(var loadCarrierObj in bodyData)
             {
-                ContainerId = bodyData.ContainerId,
-                LCyear = convertToInt(bodyData.LCyear),
-                LCmonth = convertToInt(bodyData.LCmonth),
-                Location = bodyData.Location,
-                Plant = bodyData.Plant,
-                LoadInDays = convertToInt(bodyData.LoadInDays),
-                WBS = bodyData.WBS
-            };
+
+                LoadCarrierEntity loadCarrier = new LoadCarrierEntity()
+                {
+                    ContainerId = bodyData.ContainerId,
+                    LCyear = convertToInt(bodyData.LCyear),
+                    LCmonth = convertToInt(bodyData.LCmonth),
+                    Location = bodyData.Location,
+                    Plant = bodyData.Plant,
+                    LoadInDays = convertToInt(bodyData.LoadInDays),
+                    WBS = bodyData.WBS
+                };
+
+                loadCarriers.Add(loadCarrier);
+
+            }
+
+            return loadCarriers;
         }
 
 

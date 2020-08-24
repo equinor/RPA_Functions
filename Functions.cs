@@ -35,14 +35,19 @@ namespace rpa_functions
             log.LogInformation("PC315 Log LoadCarrier called");
 
             dynamic bodyData = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
+           
+            List<LoadCarrierEntity> lcEntities = rpa_pc315.Mappings.dynamicToloadCarrierEntity(bodyData);
 
-            LoadCarrierEntity lcEntity = rpa_pc315.Mappings.dynamicToloadCarrierEntity(bodyData);
+            foreach(LoadCarrierEntity loadCarrier in lcEntities) { 
 
-            TableResult tr = await lcTableOps.insertItem(lcEntity);
+                TableResult tr = await lcTableOps.insertItem(loadCarrier);
 
-            return new OkObjectResult(tr.Result); // put something in here.
+            }
+            return new OkObjectResult("ok"); // put something in here.
         }
     }
+
+
         public class PC239WebService
     {
         private ReturnForCreditTableOperations rfcOps = new ReturnForCreditTableOperations();
@@ -125,29 +130,32 @@ namespace rpa_functions
             return new OkObjectResult(JsonConvert.SerializeObject(assetInfo));
         }
 
-        /**
-       [FunctionName("PC269_PostAsset")]
-       public async Task<IActionResult> PostAssetAsync(
-           [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostAsset")] HttpRequest req,
-           CancellationToken cts,
+        
+       [FunctionName("PC269_PostDailyReportFacilityField")]
+       public async Task<IActionResult> PostDailyReportFacilityAsync(
+           [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostDailyReportFacilityField/{assetId}")] HttpRequest req,
+           CancellationToken cts, int assetId,
            ILogger log)
        {
-           log.LogInformation("PC269 post assets  request received");
+           log.LogInformation("PC269_PostDailyReportFacilityFieldrequest received");
 
-           string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-           
-           Asset newAsset = JsonConvert.DeserializeObject<Asset>(requestBody);
+           dynamic newDailyReports = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
 
-           var entity = await _context.Assets.AddAsync(newAsset, cts);
+            List<DailyReportsTotal> newDailyReportsList = PC269Mappings.ObjectToDailyProductionTotalList(newDailyReports, assetId);
 
-           await _context.SaveChangesAsync(cts);
+           foreach(DailyReportsTotal dailyReport in newDailyReportsList) {
 
-           return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity));
+                dailyReport.AssetId = assetId;
+                var entity = await _context.DailyReportsTotal.AddAsync(dailyReport, cts);
+
+                await _context.SaveChangesAsync(cts);
+            }
+
+            return new OkObjectResult("ok");
        }
 
-            POST units
 
-   */
+   
 
         [FunctionName("PC269_PostDailyReportTotal")]
         public async Task<IActionResult> PostDailyReportAsync(
