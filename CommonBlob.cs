@@ -9,16 +9,16 @@ namespace rpa_functions
     class CommonBlob
     {
         string blobConnectionString = Environment.GetEnvironmentVariable("STORAGE_CONNECTION");
-        string blobContainerName = Environment.GetEnvironmentVariable("BLOB_CONTAINER");
+        
         CloudStorageAccount blobStorageAccount;
         CloudBlobClient blobClient;
         CloudBlobContainer cloudBlobContainer;
 
-        public CommonBlob()
+        public CommonBlob(string containerName)
         {
             blobClient = getBlobConnection();
             // Get and interpreter return value
-            getBlobContainer();
+            getBlobContainer(containerName);
             // Only set if created
             setBlobContainerPermissions();
 
@@ -33,10 +33,10 @@ namespace rpa_functions
       
         }
 
-        private async Task getBlobContainer()
+        private async Task getBlobContainer(string containerName)
         {
 
-            cloudBlobContainer = blobClient.GetContainerReference(blobContainerName);
+            cloudBlobContainer = blobClient.GetContainerReference(containerName);
             
             await cloudBlobContainer.CreateIfNotExistsAsync();
 
