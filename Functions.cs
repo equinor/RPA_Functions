@@ -130,18 +130,41 @@ namespace rpa_functions
             return new OkObjectResult(JsonConvert.SerializeObject(assetInfo));
         }
 
-        
-       [FunctionName("PC269_PostDailyReportFacilityField")]
+        [FunctionName("PC269_PostDailyReportField")]
+        public async Task<IActionResult> PostDailyReportFieldAsync(
+    [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostDailyReportField/{assetId}")] HttpRequest req,
+    CancellationToken cts, int assetId,
+    ILogger log)
+        {
+            log.LogInformation("PC269_PostDailyReportFieldrequest received");
+
+            dynamic newDailyReports = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
+
+            List<DailyReportsTotal> newDailyReportsList = PC269Mappings.ObjectToDailyProductionTotalList(newDailyReports, assetId, 3);
+
+            foreach (DailyReportsTotal dailyReport in newDailyReportsList)
+            {
+
+                dailyReport.AssetId = assetId;
+                var entity = await _context.DailyReportsTotal.AddAsync(dailyReport, cts);
+
+                await _context.SaveChangesAsync(cts);
+            }
+
+            return new OkObjectResult("ok");
+        }
+
+        [FunctionName("PC269_PostDailyReportFacility")]
        public async Task<IActionResult> PostDailyReportFacilityAsync(
-           [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostDailyReportFacilityField/{assetId}")] HttpRequest req,
+           [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostDailyReportFacility/{assetId}")] HttpRequest req,
            CancellationToken cts, int assetId,
            ILogger log)
        {
-           log.LogInformation("PC269_PostDailyReportFacilityFieldrequest received");
+           log.LogInformation("PC269_PostDailyReportFacilityrequest received");
 
            dynamic newDailyReports = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
 
-            List<DailyReportsTotal> newDailyReportsList = PC269Mappings.ObjectToDailyProductionTotalList(newDailyReports, assetId);
+            List<DailyReportsTotal> newDailyReportsList = PC269Mappings.ObjectToDailyProductionTotalList(newDailyReports, assetId, 2);
 
            foreach(DailyReportsTotal dailyReport in newDailyReportsList) {
 
@@ -173,7 +196,7 @@ namespace rpa_functions
                 dynamic newDailyReport = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
                 newDailyReport.asset_Id = assetId;
 
-                DailyReportsTotal dailyReportTotal = PC269Mappings.ObjectToDailyReportsTotal(newDailyReport, assetId);
+                DailyReportsTotal dailyReportTotal = PC269Mappings.ObjectToDailyReportsTotal(newDailyReport, assetId, 1);
 
                 var entity = await _context.DailyReportsTotal.AddAsync(dailyReportTotal, cts);
                 await _context.SaveChangesAsync(cts);
@@ -339,7 +362,7 @@ ILogger log)
          ILogger log)
         {
             log.LogInformation("PC269 Upload File called");
-            CommonBlob blobOps = new CommonBlob();
+            CommonBlob blobOps = new CommonBlob("pc269blob");
             Stream data = await req.Content.ReadAsStreamAsync();
 
            
