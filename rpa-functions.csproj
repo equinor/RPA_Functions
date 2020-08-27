@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-    <AzureFunctionsVersion>v2</AzureFunctionsVersion>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AzureFunctionsVersion>v3</AzureFunctionsVersion>
     <RootNamespace>rpa_functions</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -11,7 +11,7 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="8.5.1" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.0.0" />
-    <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="11.1.1" />
+    <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="11.2.2" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.7">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -23,8 +23,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="3.1.1" />
-    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.29" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.7.0" />
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.9" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System">
@@ -38,6 +38,30 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="**/*" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="bin\Debug\netcoreapp3.1\PC239_PostReturnForCredit\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC239_GetReturnForCredit\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC315_LogLoadCarrier\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC239_PutUpdateReturnForCreditGuid\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC239_DeleteReturnForCredit\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_PostDailyProductionWells\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_GetAssetId\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_PostDailyReportTotal\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_PostDailyWaterInjectionWells\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_PostDailyGasInjectionWell\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_PostWellTest\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_PostComments\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_UploadFile\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC243_GetMaterialDeliveryRob\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC243_RemoveMaterialDeliveryRob\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC35_Auth\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC243_PostMaterialDelivery\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC35_Webservice\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC185_Webservice\function.json" />
+  </ItemGroup>
+  <ItemGroup>
     <None Update="host.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -49,7 +73,5 @@
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Copy Sourcefiles="$(TargetDir)bin\$(ProjectName).dll" DestinationFolder="$(TargetDir)$(ProjectName).dll" />
-  </Target>
+
 </Project>

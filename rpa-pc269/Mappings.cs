@@ -10,15 +10,33 @@ namespace rpa_functions.rpa_pc269
         /**
          * DailyProductionTotal
          */
-        public static DailyReportsTotal ObjectToDailyReportsTotal(dynamic newDailyReport, int assetId, short reportType)
+
+        public static List<DailyReportsTotal> ObjectToDailyProductionTotalList(dynamic newDailyReports, int assetId)
+        {
+            List<DailyReportsTotal> dailyProdTotalList = new List<DailyReportsTotal>();
+
+            foreach (dynamic newDailyProdReport in newDailyReports)
+            {
+                DailyReportsTotal dailyProdReport = ObjectToDailyReportsTotal(newDailyProdReport, assetId);
+                dailyProdTotalList.Add(dailyProdReport);
+            }
+
+            return dailyProdTotalList;
+
+            // Add field to database
+
+            // Add parent_report to database and to field/facility
+
+        }
+
+
+        public static DailyReportsTotal ObjectToDailyReportsTotal(dynamic newDailyReport, int assetId)
         {
             DailyReportsTotal dailyReportTotal = new DailyReportsTotal();
 
             dailyReportTotal.AssetId = assetId;
             dailyReportTotal.Date = Convert.ToDateTime(newDailyReport.date);
             dailyReportTotal.FacilityName = Convert.ToString(newDailyReport.facility_name);
-            dailyReportTotal.FieldName = Convert.ToString(newDailyReport.field_name);
-            dailyReportTotal.ReportType = reportType;
             dailyReportTotal.OilProdAllocated = convertToDecimal(newDailyReport.oil_prod_allocated);
             dailyReportTotal.OilProdTarget = convertToDecimal(newDailyReport.oil_prod_target);
             dailyReportTotal.OilProdMtd = convertToDecimal(newDailyReport.oil_prod_MTD);
