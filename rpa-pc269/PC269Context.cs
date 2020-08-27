@@ -46,7 +46,7 @@ namespace rpa_functions.rpa_pc269
 
                 entity.Property(e => e.AssetId).HasColumnName("asset_Id");
 
-                entity.Property(e => e.Asset_SMDS).HasColumnName("asset_SMDA");
+                entity.Property(e => e.Asset_SMDA).HasColumnName("asset_SMDA");
 
                 entity.Property(e => e.AssetName)
                     .IsRequired()
