@@ -33,6 +33,11 @@ namespace rpa_functions
       
         }
 
+        public async Stream downloadFileFromBlob(string fileName)
+        {
+
+        }
+
         private async Task getBlobContainer(string containerName)
         {
 

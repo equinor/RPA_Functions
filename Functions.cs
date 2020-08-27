@@ -23,7 +23,63 @@ using Microsoft.WindowsAzure.Storage.Table;
 
 namespace rpa_functions
 {
-    public class PC315WebService
+
+    // Tore process
+
+public class PC19Webservice{
+
+    [FunctionName("PC19_UploadVMD")]
+    public async Task<IActionResult> UploadVMDBlob(
+[HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC19_UploadVMD")] HttpRequestMessage req,
+ ILogger log)
+    {
+        string pc19vmd = Environment.GetEnvironmentVariable("PC19_BLOB_CONTAINER_VMD");
+        string pc19input = Environment.GetEnvironmentVariable("PC19_BLOB_CONTAINER_IN");
+
+        log.LogInformation("PC19 Upload File called");
+
+        CommonBlob inputBlob = new CommonBlob(pc19input);
+
+        Stream data = await req.Content.ReadAsStreamAsync();
+
+        
+        DateTime _date = DateTime.Now;
+        var _dateString = _date.ToString("dd-MM-yyyy");
+        string fileName = $"{_dateString}-{Guid.NewGuid().ToString()}.pdf";
+
+        Uri retUri = await inputBlob.uploadFileToBlob(data, fileName);
+
+        Console.WriteLine(retUri.AbsoluteUri);
+
+        return new OkObjectResult(new { fileuri = retUri.AbsoluteUri });
+    }
+
+
+        [FunctionName("PC19_DownloadVMD")]
+        public async Task<IActionResult> DownloadVMDBlob(
+    [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC19_DownloadVMD/{fileguid}")] HttpRequestMessage req,
+     ILogger log, string fileguid)
+        {
+            string pc19output = Environment.GetEnvironmentVariable("PC19_BLOB_CONTAINER_OUT");
+
+            log.LogInformation("PC19 Download File called");
+
+            CommonBlob outputBlob = new CommonBlob(pc19output);
+
+
+            
+
+
+            return new OkObjectResult("ok");
+        }
+
+    }
+
+
+
+
+
+public class PC315WebService
     {
         private LoadCarrierTableOps lcTableOps = new LoadCarrierTableOps();
 
@@ -271,7 +327,7 @@ namespace rpa_functions
     
       [FunctionName("PC269_PostDailyGasInjectionWell")]
       public async Task<IActionResult> PostDailyGasInjectionWellAsync(
-     [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostDailyGasInjectionWell/{dailyReportTotalId}")] HttpRequest req,
+      [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostDailyGasInjectionWell/{dailyReportTotalId}")] HttpRequest req,
       int dailyReportTotalId,
       CancellationToken cts,
       ILogger log)
@@ -299,10 +355,10 @@ namespace rpa_functions
         // Welltest
         [FunctionName("PC269_PostWellTest")]
         public async Task<IActionResult> PostWellTestAsync(
-[HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostWellTest/{dailyReportTotalId}")] HttpRequest req,
-int dailyReportTotalId,
-CancellationToken cts,
-ILogger log)
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostWellTest/{dailyReportTotalId}")] HttpRequest req,
+        int dailyReportTotalId,
+        CancellationToken cts,
+        ILogger log)
         {
             log.LogInformation("PC269 post well test  request received");
 
@@ -326,11 +382,11 @@ ILogger log)
 
 
         [FunctionName("PC269_PostComments")]
-      public async Task<IActionResult> PostCommentsAsync(
-      [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostComments/{dailyReportTotalId}")] HttpRequest req,
-      int dailyReportTotalId,
-      CancellationToken cts,
-      ILogger log)
+        public async Task<IActionResult> PostCommentsAsync(
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_PostComments/{dailyReportTotalId}")] HttpRequest req,
+        int dailyReportTotalId,
+        CancellationToken cts,
+        ILogger log)
       {
           log.LogInformation("PC269 post comments  request received");
 
@@ -361,8 +417,12 @@ ILogger log)
         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC269_UploadFile")] HttpRequestMessage req,
          ILogger log)
         {
+            string pc269BlobContainer = Environment.GetEnvironmentVariable("PC269_BLOB_CONTAINER");
             log.LogInformation("PC269 Upload File called");
-            CommonBlob blobOps = new CommonBlob("pc269blob");
+
+
+            CommonBlob blobOps = new CommonBlob(pc269BlobContainer);
+
             Stream data = await req.Content.ReadAsStreamAsync();
 
            
