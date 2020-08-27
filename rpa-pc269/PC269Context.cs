@@ -55,8 +55,8 @@ namespace rpa_functions.rpa_pc269
 
                 entity.Property(e => e.Country)
                     .IsRequired()
-                    .HasColumnName("country")
-                    .HasMaxLength(40);
+                    .HasColumnName("country_id");
+                    
 
                 entity.Property(e => e.InstType)
                     .IsRequired()
