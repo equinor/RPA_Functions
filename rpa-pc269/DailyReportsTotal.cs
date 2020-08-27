@@ -10,6 +10,8 @@ namespace rpa_functions.rpa_pc269
         public int AssetId { get; set; }
         public DateTime Date { get; set; }
         public string FacilityName { get; set; }
+        public string FieldName { get; set; }
+        public short? ReportType { get; set; }
         public decimal? OilProdAllocated { get; set; }
         public decimal? OilProdTarget { get; set; }
         public decimal? OilProdMtd { get; set; }

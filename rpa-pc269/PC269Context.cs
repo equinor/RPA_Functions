@@ -46,11 +46,7 @@ namespace rpa_functions.rpa_pc269
 
                 entity.Property(e => e.AssetId).HasColumnName("asset_Id");
 
-                entity.Property(e => e.AbbyyBatch)
-                    .IsRequired()
-                    .HasColumnName("abbyy_batch")
-                    .HasMaxLength(40)
-                    .IsUnicode(false);
+                entity.Property(e => e.Asset_SMDS).HasColumnName("asset_SMDA");
 
                 entity.Property(e => e.AssetName)
                     .IsRequired()
@@ -66,8 +62,6 @@ namespace rpa_functions.rpa_pc269
                     .IsRequired()
                     .HasColumnName("inst_type")
                     .HasMaxLength(25);
-
-                entity.Property(e => e.Sla).HasColumnName("sla");
 
                 entity.Property(e => e.Verifier)
                     .IsRequired()
@@ -249,6 +243,13 @@ namespace rpa_functions.rpa_pc269
                     .HasColumnName("facility_name")
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.Property(e => e.FieldName)
+                    .HasColumnName("field_name")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ReportType).HasColumnName("report_type");
 
                 entity.Property(e => e.FlareGasAllocated)
                     .HasColumnName("flare_gas_allocated")
