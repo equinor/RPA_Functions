@@ -1,6 +1,7 @@
 ﻿using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -31,6 +32,31 @@ namespace rpa_functions
             await cloudBlockBlob.UploadFromStreamAsync(inFile);
             return cloudBlockBlob.Uri;
       
+        }
+
+        public async Task<Stream> downloadFileFromBlob(string fileName)
+        {
+            Stream returnStream = null;
+
+            CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(fileName);
+            await cloudBlockBlob.DownloadToStreamAsync(returnStream);
+
+            return returnStream;
+        }
+
+        public async Task<List<IListBlobItem>> listFilesInContainer()
+        {
+            BlobContinuationToken continuationToken = null;
+            List<IListBlobItem> results = new List<IListBlobItem>();
+
+            do
+            {
+                var response = await cloudBlobContainer.ListBlobsSegmentedAsync(continuationToken);
+                continuationToken = response.ContinuationToken;
+                results.AddRange(response.Results);
+            }
+            while (continuationToken != null);
+            return results;
         }
 
         private async Task getBlobContainer(string containerName)
