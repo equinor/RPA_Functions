@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -320,7 +321,7 @@ namespace rpa_functions.rpa_pc269
 
             if (strDecimal != null) strDecimal = Regex.Replace(strDecimal, @",", ".");
 
-            if (Decimal.TryParse(strDecimal, out outputDecimal)) return outputDecimal;
+            if (Decimal.TryParse(strDecimal, NumberStyles.Any, CultureInfo.InvariantCulture, out outputDecimal)) return outputDecimal;
 
             return 0; // default return value if missing or invalid type
 
