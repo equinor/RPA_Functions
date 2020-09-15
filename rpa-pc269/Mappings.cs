@@ -269,7 +269,7 @@ namespace rpa_functions.rpa_pc269
 
             wellTest.DailyreportId = dailyReportTotalId;
             wellTest.WellName = Convert.ToString(newWellTest.well_name);
-            wellTest.TestDate = convertToDate(newWellTest.test_date);
+            wellTest.TestDate = Convert.ToDateTime(newWellTest.test_date);
             wellTest.OnlineTime = convertToShort(newWellTest.online_time);
             wellTest.ChokeOpening = convertToDecimal(newWellTest.choke_opening);
             wellTest.OilProdRate = convertToDecimal(newWellTest.oil_prod_rate);
