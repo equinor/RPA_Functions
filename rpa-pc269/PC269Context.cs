@@ -197,7 +197,11 @@ namespace rpa_functions.rpa_pc269
 
                 entity.Property(e => e.Wht).HasColumnName("WHT");
 
-                entity.Property(e => e.Zone).HasColumnName("zone");
+                entity.Property(e => e.Zone)
+                    .HasColumnName("zone")
+                    .HasMaxLength(25);
+                
+
             });
 
             modelBuilder.Entity<DailyReportsTotal>(entity =>

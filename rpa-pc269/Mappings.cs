@@ -128,7 +128,7 @@ namespace rpa_functions.rpa_pc269
             dailyProdWell.WaterCut = convertToDecimal(newDailyProductionWell.water_cut);
             dailyProdWell.GasLift = convertToDecimal(newDailyProductionWell.gas_lift);
             dailyProdWell.AnnulusPressure = convertToDecimal(newDailyProductionWell.annulus_pressure);
-            dailyProdWell.Zone = convertToDecimal(newDailyProductionWell.zone);
+            dailyProdWell.Zone = Convert.ToString(newDailyProductionWell.zone);
 
             return dailyProdWell;
 
