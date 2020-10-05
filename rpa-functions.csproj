@@ -9,13 +9,8 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="9.2.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
     <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="11.2.2" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -28,6 +23,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="3.1.8" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.9" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="2.0.1" />
+    <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.22" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System">
@@ -62,6 +58,44 @@
     <None Remove="bin\Debug\netcoreapp3.1\PC35_Auth\function.json" />
     <None Remove="bin\Debug\netcoreapp3.1\PC243_PostMaterialDelivery\function.json" />
     <None Remove="bin\Debug\netcoreapp3.1\PC35_Webservice\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC185_Webservice\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC19_DownloadVMD\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC315_LogLoadCarrier\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC239_DeleteReturnForCredit\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_PostDailyReportField\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC19_UploadVMD\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC239_GetReturnForCredit\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC239_PostReturnForCredit\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC239_PutUpdateReturnForCreditGuid\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_GetAssetId\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_PostDailyReportFacility\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_PostDailyReportTotal\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_PostDailyProductionWells\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_PostDailyWaterInjectionWells\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_PostWellTest\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_PostDailyGasInjectionWell\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_UploadFile\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_PostComments\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC35_Auth\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC243_RemoveMaterialDeliveryRob\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC243_GetMaterialDeliveryRob\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC35_Webservice\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC243_PostMaterialDelivery\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC185_Webservice\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC315_LogLoadCarrier\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC239_PostReturnForCredit\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC239_PutUpdateReturnForCreditGuid\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC239_GetReturnForCredit\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_GetAssetId\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_PostDailyReportField\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC239_DeleteReturnForCredit\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_PostDailyReportFacility\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_PostDailyProductionWells\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_UploadFile\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC269_PostComments\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC243_RemoveMaterialDeliveryRob\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC243_PostMaterialDelivery\function.json" />
+    <None Remove="bin\Debug\netcoreapp3.1\PC35_Auth\function.json" />
     <None Remove="bin\Debug\netcoreapp3.1\PC185_Webservice\function.json" />
   </ItemGroup>
   <ItemGroup>

@@ -220,7 +220,7 @@ public class PC315WebService
 
            dynamic newDailyReports = JsonConvert.DeserializeObject(await new StreamReader(req.Body).ReadToEndAsync());
 
-            List<DailyReportsTotal> newDailyReportsList = PC269Mappings.ObjectToDailyProductionTotalList(newDailyReports, assetId, 2);
+           List<DailyReportsTotal> newDailyReportsList = PC269Mappings.ObjectToDailyProductionTotalList(newDailyReports, assetId, 2);
 
            foreach(DailyReportsTotal dailyReport in newDailyReportsList) {
 
