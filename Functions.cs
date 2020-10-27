@@ -33,7 +33,6 @@ public class PC19Webservice{
 [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC19_UploadVMD")] HttpRequestMessage req,
  ILogger log)
     {
-        string pc19vmd = Environment.GetEnvironmentVariable("PC19_BLOB_CONTAINER_VMD");
         string pc19input = Environment.GetEnvironmentVariable("PC19_BLOB_CONTAINER_IN");
 
         log.LogInformation("PC19 Upload File called");
@@ -57,7 +56,7 @@ public class PC19Webservice{
 
         [FunctionName("PC19_DownloadVMD")]
         public async Task<IActionResult> DownloadVMDBlob(
-    [HttpTrigger(AuthorizationLevel.Function, "post", Route = "PC19_DownloadVMD/{fileguid}")] HttpRequestMessage req,
+    [HttpTrigger(AuthorizationLevel.Function, "get", Route = "PC19_DownloadVMD/{fileguid}")] HttpRequestMessage req,
      ILogger log, string fileguid)
         {
             string pc19output = Environment.GetEnvironmentVariable("PC19_BLOB_CONTAINER_OUT");
@@ -66,11 +65,10 @@ public class PC19Webservice{
 
             CommonBlob outputBlob = new CommonBlob(pc19output);
 
+            string outputFile = outputBlob.convertToBase64(outputBlob.downloadStreamFromBlob(fileguid).Result);
 
-            
+            return new OkObjectResult(new { FileName = fileguid, FileContent = outputFile });
 
-
-            return new OkObjectResult("ok");
         }
 
     }
