@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using System.Text;
 
 namespace rpa_functions
 {
@@ -34,15 +35,31 @@ namespace rpa_functions
       
         }
 
-        public async Task<Stream> downloadFileFromBlob(string fileName)
+        public async Task<Stream> downloadStreamFromBlob(string fileName)
         {
-            Stream returnStream = null;
+            Stream returnStream = new MemoryStream();
 
             CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(fileName);
+
+            Console.WriteLine(cloudBlockBlob.StorageUri.ToString());
             await cloudBlockBlob.DownloadToStreamAsync(returnStream);
 
             return returnStream;
         }
+
+        public string convertToBase64(Stream inStream)
+        {
+
+
+            var bytes = new Byte[(int)inStream.Length];
+
+            inStream.Seek(0, SeekOrigin.Begin);
+            inStream.Read(bytes, 0, (int)inStream.Length);
+
+            return (Convert.ToBase64String(bytes));
+            
+        }
+
 
         public async Task<List<IListBlobItem>> listFilesInContainer()
         {
@@ -61,7 +78,7 @@ namespace rpa_functions
 
         private async Task getBlobContainer(string containerName)
         {
-
+            Console.WriteLine(containerName);
             cloudBlobContainer = blobClient.GetContainerReference(containerName);
             
             await cloudBlobContainer.CreateIfNotExistsAsync();
