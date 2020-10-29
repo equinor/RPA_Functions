@@ -44,13 +44,13 @@ public class PC19Webservice{
         
         DateTime _date = DateTime.Now;
         var _dateString = _date.ToString("dd-MM-yyyy");
-        string fileName = $"{_dateString}-{Guid.NewGuid().ToString()}.pdf";
+        string fileName = $"{_dateString}-{Guid.NewGuid().ToString()}.xlsx";
 
         Uri retUri = await inputBlob.uploadFileToBlob(data, fileName);
 
         Console.WriteLine(retUri.AbsoluteUri);
 
-        return new OkObjectResult(new { fileuri = retUri.AbsoluteUri });
+        return new OkObjectResult(new { fileuri = retUri.AbsolutePath });
     }
 
 
