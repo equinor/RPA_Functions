@@ -457,7 +457,7 @@ public class PC315WebService
             string retVal = await mdTableOps.InsertBatch(bodyData);
 
             // This is messy, correct..
-            return new OkObjectResult("{'webid': '"+retVal+"'}");
+            return new OkObjectResult(new { webid = retVal });
         }
 
         // Make a webservice to poll on webids on status=1 (updated), update to status 2
