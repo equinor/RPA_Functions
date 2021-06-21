@@ -137,6 +137,7 @@ namespace rpa_functions.rpa_pc239
             returnEntity.ReturnsNumber = bodyData.ReturnsNumber;
             returnEntity.POResponsibleName = bodyData.POResponsibleName;
             returnEntity.PurchaseDocument = bodyData.PurchaseDocument;
+            returnEntity.ReasonForReturn = bodyData.ReasonForReturn;
             returnEntity.Item = bodyData.Item;
             returnEntity.Text = bodyData.Text;
             returnEntity.Quantity = bodyData.Quantity;
@@ -179,6 +180,7 @@ namespace rpa_functions.rpa_pc239
             returnForCredit.ContactPerson = bodyData.ContactPerson;
             returnForCredit.AddressStreet = bodyData.AddressStreet;
             returnForCredit.AddressPostCode = bodyData.AddressPostCode;
+            returnForCredit.ReasonForReturn = bodyData.ReasonForReturn;
             returnForCredit.AddressCity = bodyData.AddressCity;
             returnForCredit.CommentUser = bodyData.CommentUuser;
             returnForCredit.CommentDate = bodyData.CommentDate;
